@@ -1,5 +1,9 @@
 import «Raylib»
+
 import Examples.Camera2DPlatformer.Types
+open Camera2DPlatformer.Types
+
+namespace Camera2DPlatformer
 
 private def screenWidth : Nat := 800
 private def screenHeight : Nat := 450
@@ -101,9 +105,11 @@ private def doRender : GameM Unit := do
         renderPlayer
   closeWindow
 
-def camera2DPlatformer : IO Unit := do
+def main : IO Unit := do
   initWindow screenWidth screenHeight "2d camera"
   setTargetFPS fps
   doRender
   |>.run' initGameState
   |>.run initGameEnv
+
+end Camera2DPlatformer

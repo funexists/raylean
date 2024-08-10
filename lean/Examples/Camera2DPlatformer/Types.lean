@@ -1,5 +1,7 @@
 import Raylib.Types
 
+namespace Camera2DPlatformer.Types
+
 structure Player where
   position : Vector2
   speed : Float
@@ -63,3 +65,5 @@ def setOffset [MonadState GameState m] (v : Vector2) : m Unit :=
 
 def setTarget [MonadState GameState m] (v : Vector2) : m Unit :=
   modifyCamera (fun c => { c with target := v })
+
+end Camera2DPlatformer.Types

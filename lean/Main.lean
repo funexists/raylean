@@ -1,3 +1,3 @@
 import «Examples»
 
-def main : IO Unit := camera2DPlatformer
+def main : IO Unit := JessicaCantSwim.main
