@@ -10,6 +10,8 @@ lean_lib «Raylib» where
 lean_lib «Examples» where
   precompileModules := true
 
+lean_lib «Lens»
+
 @[default_target]
 lean_exe «raylib-lean» where
   root := `Main

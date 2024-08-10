@@ -1,4 +1,5 @@
 import Raylib.Types
+import Lens
 
 structure Player where
   position : Vector2
@@ -17,49 +18,54 @@ structure GameState where
 structure GameEnv where
   items : List EnvItem
 
+makeLenses Player
+makeLenses Camera2D
+makeLenses GameState
+makeLenses Vector2
+
 abbrev GameM : Type -> Type := StateT GameState (ReaderT GameEnv IO)
 
 def modifyPlayer [MonadState GameState m] (f : Player → Player) : m Unit :=
-  modify (fun s => { s with player := f s.player })
+  modify (over GameState.lens.player f)
 
 def modifyPosition [MonadState GameState m] (f : Vector2 → Vector2) : m Unit :=
-  modifyPlayer (fun p => { p with position := f p.position })
+  modify (over (GameState.lens.player ∘ Player.lens.position) f)
 
 def modifyPositionX [MonadState GameState m] (f : Float → Float) : m Unit :=
-  modifyPosition (fun v => { v with x := f v.x })
+  modify (over (GameState.lens.player ∘ Player.lens.position ∘ Vector2.lens.x) f)
 
 def modifyPositionY [MonadState GameState m] (f : Float → Float) : m Unit :=
-  modifyPosition (fun v => { v with y := f v.y })
+  modify (over (GameState.lens.player ∘ Player.lens.position ∘ Vector2.lens.y) f)
 
 def modifySpeed [MonadState GameState m] (f : Float → Float) : m Unit :=
-  modifyPlayer (fun p => { p with speed := f p.speed })
+  modify (over (GameState.lens.player ∘ Player.lens.speed) f)
 
 def setPosition [MonadState GameState m] (p : Vector2) : m Unit :=
-  modifyPosition (fun _ => p)
+  modify (set (GameState.lens.player ∘ Player.lens.position) p)
 
 def setPositionX [MonadState GameState m] (px : Float) : m Unit :=
-  modifyPositionX (fun _ => px)
+  modify (set (GameState.lens.player ∘ Player.lens.position ∘ Vector2.lens.x) px)
 
 def setPositionY [MonadState GameState m] (py : Float) : m Unit :=
-  modifyPositionY (fun _ => py)
+  modify (set (GameState.lens.player ∘ Player.lens.position ∘ Vector2.lens.y) py)
 
 def setCanJump [MonadState GameState m] (b : Bool) : m Unit :=
-  modifyPlayer (fun p => { p with canJump := b })
+  modify (set (GameState.lens.player ∘ Player.lens.canJump) b)
 
 def setSpeed [MonadState GameState m] (s : Float) : m Unit :=
-  modifyPlayer (fun p => { p with speed := s })
+  modify (set (GameState.lens.player ∘ Player.lens.speed) s)
 
 def modifyCamera [MonadState GameState m] (f : Camera2D -> Camera2D) : m Unit :=
-  modify (fun s => { s with camera := f s.camera })
+  modify (over (GameState.lens.camera) f)
 
 def modifyZoom [MonadState GameState m] (f : Float -> Float) : m Unit :=
-  modifyCamera (fun c => { c with zoom := f c.zoom })
+  modify (over (GameState.lens.camera ∘ Camera2D.lens.zoom) f)
 
 def setZoom [MonadState GameState m] (z : Float) : m Unit :=
-  modifyZoom (fun _ => z)
+  modify (set (GameState.lens.camera ∘ Camera2D.lens.zoom) z)
 
 def setOffset [MonadState GameState m] (v : Vector2) : m Unit :=
-  modifyCamera (fun c => { c with offset := v })
+  modify (set (GameState.lens.camera ∘ Camera2D.lens.offset) v)
 
 def setTarget [MonadState GameState m] (v : Vector2) : m Unit :=
-  modifyCamera (fun c => { c with target := v })
+  modify (set (GameState.lens.camera ∘ Camera2D.lens.target) v)
