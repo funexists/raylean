@@ -1,8 +1,30 @@
+#include "bundle.h"
 #include <lean/lean.h>
 #include <raylib.h>
 #include <stdint.h>
 
+// leanc doesn't provide string.h
+int strcmp(const char *s1, const char *s2) {
+  while (*s1 && (*s1 == *s2)) {
+    s1++;
+    s2++;
+  }
+  return *(const unsigned char *)s1 - *(const unsigned char *)s2;
+}
+
 #define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
+
+size_t resourceInfoSize = sizeof(resource_infos) / sizeof(ResourceInfo);
+
+void *getFileData(char *filename, size_t *size) {
+  for (size_t i = 0; i < resourceInfoSize; i++) {
+    if (strcmp(resource_infos[i].filename, filename) == 0) {
+      *size = resource_infos[i].size;
+      return &bundle_data[resource_infos[i].offset];
+    }
+  }
+  return NULL;
+}
 
 static inline Color color_of_arg(lean_obj_arg color) {
   uint8_t r = lean_ctor_get_uint8(color, 0);

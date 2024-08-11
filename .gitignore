@@ -1,2 +1,4 @@
 /.lake
 /lib
+c/bundle.h
+build/

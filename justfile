@@ -1,6 +1,10 @@
 raylib_release_path := join(justfile_directory(), "lib")
 raylib_src_path := join(justfile_directory(), "raylib-5.0", "src")
 extra_raylib_config_flags := "-DSUPPORT_FILEFORMAT_SVG"
+resource_dir := join(justfile_directory(), "resources")
+bundle_h_path := join(justfile_directory(), "c", "include", "bundle.h")
+makebundle_src_path := join(justfile_directory(), "scripts", "makeBundle.lean")
+makebundle_output_path := join(justfile_directory(), "build", "makeBundle")
 
 [private]
 default:
@@ -31,7 +35,7 @@ build_raylib:
     fi
 
 # build both the raylib library and the Lake project
-build: build_raylib
+build: build_raylib bundler
     lake build
 
 # clean only the Lake project
@@ -43,9 +47,23 @@ clean_raylib:
     make -C {{raylib_src_path}} clean
     rm -rf {{raylib_release_path}}
 
+clean_bundler:
+    rm -rf {{parent_directory(bundle_h_path)}}
+    rm -rf {{parent_directory(makebundle_output_path)}}
+
 # clean both the raylib build and the Lake project
-clean_all: clean clean_raylib
+clean_all: clean clean_raylib clean_bundler
 
 # run the demo executable
 run: build
     .lake/build/bin/raylib-lean
+
+build-bundler:
+    mkdir -p {{parent_directory(makebundle_output_path)}}
+    lean -c {{makebundle_output_path}}.c {{makebundle_src_path}}
+    leanc {{makebundle_output_path}}.c -o {{makebundle_output_path}}
+
+# run the bundler
+bundler: build-bundler
+    mkdir -p {{parent_directory(bundle_h_path)}}
+    {{makebundle_output_path}} {{resource_dir}} {{bundle_h_path}}
