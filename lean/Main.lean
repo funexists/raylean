@@ -1,3 +1,3 @@
-import «Examples»
+import «Examples».Selector
 
-def main : IO Unit := JessicaCantSwim.main
+def main : IO Unit := selector

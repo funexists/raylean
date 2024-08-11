@@ -1,5 +1,7 @@
 import «Raylib»
 
+namespace Window
+
 def doRender : IO Unit := do
   while not (← windowShouldClose) do
     renderFrame do
@@ -13,7 +15,9 @@ def doRender : IO Unit := do
       drawText "Hello From Lean!" 190 200 50 c
   closeWindow
 
+end Window
+
 def window : IO Unit := do
   initWindow 800 450 "Hello From Lean!"
   setTargetFPS 60
-  doRender
+  Window.doRender
