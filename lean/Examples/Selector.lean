@@ -7,6 +7,7 @@ namespace Selector
 
 /-- Demos supported in the selector --/
 inductive Demo where
+  | jessica
   | window
   | platformer2d
   | cube3d
@@ -31,9 +32,10 @@ structure DemoInfo where
 
 def mkDemoInfo : Demo -> DemoInfo
    | .window => {start := window, title := "Basic window"}
-   | .platformer2d => {start := camera2DPlatformer, title := "2D Platformer"}
+   | .platformer2d => {start := Camera2DPlatformer.main, title := "2D Platformer"}
    | .cube3d => {start := camera3D, title := "3D Cube"}
    | .inputKeys => {start := inputKeys, title := "Input keys"}
+   | .jessica => {start := JessicaCantSwim.main, title := "Jessica can't swim"}
 
 structure DemoRenderInfo where
   /-- The action that starts the demo --/
