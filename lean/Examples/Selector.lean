@@ -31,10 +31,10 @@ structure DemoInfo where
   title : String
 
 def mkDemoInfo : Demo -> DemoInfo
-   | .window => {start := window, title := "Basic window"}
+   | .window => {start := Window.window, title := "Basic window"}
    | .platformer2d => {start := Camera2DPlatformer.main, title := "2D Platformer"}
-   | .cube3d => {start := camera3D, title := "3D Cube"}
-   | .inputKeys => {start := inputKeys, title := "Input keys"}
+   | .cube3d => {start := Camera3D.camera3D, title := "3D Cube"}
+   | .inputKeys => {start := InputKeys.inputKeys, title := "Input keys"}
    | .jessica => {start := JessicaCantSwim.main, title := "Jessica can't swim"}
 
 structure DemoRenderInfo where
@@ -78,9 +78,9 @@ def start : IO Unit := do
   closeWindow
   if let some start := launchDemo then start
 
-end Selector
-
 def selector : IO Unit := do
   initWindow Selector.screenWidth Selector.screenHeight "Select a demo"
   setTargetFPS 60
-  Selector.start
+  start
+
+end Selector

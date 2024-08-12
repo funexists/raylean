@@ -1,7 +1,7 @@
 import «Raylib»
 
 import Examples.Camera2DPlatformer.Types
-open Camera2DPlatformer.Types
+open Types
 
 namespace Camera2DPlatformer
 

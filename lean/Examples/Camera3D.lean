@@ -1,5 +1,7 @@
 import «Raylib»
 
+namespace Camera3D
+
 private def screenWidth : Nat := 1000
 private def screenHeight : Nat := 600
 private def fps : Nat := 120
@@ -32,3 +34,5 @@ def camera3D : IO Unit := do
   initWindow screenWidth screenHeight "Camera3D"
   setTargetFPS fps
   doRender
+
+end Camera3D

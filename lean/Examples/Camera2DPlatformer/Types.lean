@@ -1,7 +1,7 @@
 import Raylib.Types
 import Lens
 
-namespace Camera2DPlatformer.Types
+namespace Types
 
 structure Player where
   position : Vector2
@@ -59,4 +59,4 @@ def setZoom [MonadState GameState m] (z : Float) : m Unit :=
 def setTarget [MonadState GameState m] (v : Vector2) : m Unit :=
   modify (set (camera ∘ target) v)
 
-namespace Camera2DPlatformer.Types
+namespace Types
