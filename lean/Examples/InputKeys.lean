@@ -1,5 +1,7 @@
 import «Raylib»
 
+namespace InputKeys
+
 private def screenWidth : Nat := 800
 private def screenHeight : Nat := 450
 
@@ -42,3 +44,5 @@ def inputKeys : IO Unit := do
   initWindow 800 450 "keyboard input"
   setTargetFPS 60
   doRender
+
+end InputKeys
