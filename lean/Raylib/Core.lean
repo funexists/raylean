@@ -110,3 +110,33 @@ opaque drawCubeWires : (position : Vector3) → (width : Float) → (height : Fl
 
 @[extern "drawGrid"]
 opaque drawGrid : (slices : Nat) → (spacing : Float) → IO Unit
+
+@[extern "image_width"]
+opaque Image.width (image : @& Image) : Nat
+
+@[extern "image_height"]
+opaque Image.height (image : @& Image) : Nat
+@[extern "loadImage"]
+opaque loadImage : (resourceName : @& String) -> IO Image
+
+@[extern "texture2d_width"]
+opaque Texture2D.width (texture2d : @& Texture2D) : Nat
+
+@[extern "texture2d_height"]
+opaque Texture2D.height (texture2d : @& Texture2D) : Nat
+
+@[extern "loadTextureFromImage"]
+opaque loadTextureFromImage : (image : @& Image) -> IO Texture2D
+
+@[extern "drawTexture"]
+opaque drawTexture : (texture : @& Texture2D) -> (posX : Nat) -> (posY : Nat) -> (color : Color) -> IO Unit
+
+/--
+Source rectangle (part of the texture to use for drawing)
+source defines the part of the texture we use for drawing
+dest defines the rectangle where our texture part will fit (scaling it to fit)
+origin defines the point of the texture used as reference for rotation and scaling, it's relative to destination rectangle size
+rotation defines the texture rotation (using origin as rotation point)
+-/
+@[extern "drawTexturePro"]
+opaque drawTexturePro : (texture : @& Texture2D) -> (source : Rectangle) -> (dest : Rectangle) -> (origin : Vector2) -> (rotation : Float) -> (tint : Color) -> IO Unit
