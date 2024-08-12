@@ -13,7 +13,8 @@ def gravity : Nat := 500
 def player_jump_speed : Float := 350
 def player_horizontal_speed : Float := 200
 def player_width : Float := 40
-def player_height : Float := 40
+def player_height : Float := 1.38 * player_width
+def backgroundColor : Color := Color.Raylib.lightgray
 
 def initPlayer : Player := { position := {x := 400, y := 200}, speed := 0, canJump := false }
 
@@ -26,7 +27,9 @@ def initCamera : Camera2D := {
 
 def initGameState : GameState := { player := initPlayer, camera := initCamera }
 
-def initGameEnv : GameEnv := { items := [
+def initGameEnv (playerTexture : Texture2D) : GameEnv := {
+ playerTexture,
+ items := [
   { rect := {x := 0, y := 0, width := 1000, height := 400 }
     blocking := false,
     color := Color.Raylib.lightgray },
@@ -81,12 +84,21 @@ def renderEnvironment : GameM Unit := do
 
 def renderPlayer : GameM Unit := do
   let p := (← get).player
-  drawRectangleRec
+  let texture := (← read).playerTexture
+  let sourceRect : Rectangle :=
+    { x := 0
+    , y := 0
+    , width := texture.width.toFloat
+    , height := texture.height.toFloat }
+  let destRect : Rectangle :=
     { x := p.position.x - player_width / 2
     , y := p.position.y - player_height
     , width := player_width
-    , height := player_height }
-    Color.red
+    , height := player_height
+    }
+  let origin : Vector2 := ⟨0,0⟩
+  let rotation : Float := 0
+  drawTexturePro texture sourceRect destRect origin rotation backgroundColor
 
 def updateZoom [Monad m] [MonadState GameState m] (offset: Float) : m Unit := do
     modifyZoom (· + offset)
@@ -99,7 +111,7 @@ def doRender : GameM Unit := do
     updateZoom ((← getMouseWheelMove) * 0.05)
     updateCameraCenter
     renderFrame do
-      clearBackground Color.Raylib.lightgray
+      clearBackground backgroundColor
       renderWithCamera2D (← get).camera do
         renderEnvironment
         renderPlayer
@@ -108,8 +120,9 @@ def doRender : GameM Unit := do
 def main : IO Unit := do
   initWindow screenWidth screenHeight "2d camera"
   setTargetFPS fps
+  let walterTexture ← loadTextureFromImage (← loadImage "walter.png")
   doRender
   |>.run' initGameState
-  |>.run initGameEnv
+  |>.run (initGameEnv walterTexture)
 
 end Camera2DPlatformer

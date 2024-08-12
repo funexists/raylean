@@ -19,6 +19,7 @@ structure GameState where
 
 structure GameEnv where
   items : List EnvItem
+  playerTexture : Texture2D
 
 makeLenses Player
 makeLenses Camera2D

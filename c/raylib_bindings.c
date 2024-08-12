@@ -3,6 +3,12 @@
 #include <raylib.h>
 #include <stdint.h>
 
+#define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
+
+static inline lean_obj_res string_io_error(const char *msg) {
+  return lean_io_result_mk_error(lean_mk_io_user_error(lean_mk_string(msg)));
+}
+
 // leanc doesn't provide string.h
 int strcmp(const char *s1, const char *s2) {
   while (*s1 && (*s1 == *s2)) {
@@ -12,11 +18,11 @@ int strcmp(const char *s1, const char *s2) {
   return *(const unsigned char *)s1 - *(const unsigned char *)s2;
 }
 
-#define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
-
+// The number of resources stored in the bundle
 size_t resourceInfoSize = sizeof(resource_infos) / sizeof(ResourceInfo);
 
-void *getFileData(char *filename, size_t *size) {
+// Load data from from the bundle
+const void *getFileData(const char *filename, size_t *size) {
   for (size_t i = 0; i < resourceInfoSize; i++) {
     if (strcmp(resource_infos[i].filename, filename) == 0) {
       *size = resource_infos[i].size;
@@ -24,6 +30,125 @@ void *getFileData(char *filename, size_t *size) {
     }
   }
   return NULL;
+}
+
+/* TEXTURE */
+
+static lean_external_class *raylib_texture2d_class = NULL;
+
+// The finalizer is run by the lean runtime when a Texture2D is garbage
+// collected
+static void raylib_texture2d_finalizer(void *texture2d) {
+  UnloadTexture(*(Texture2D *)texture2d);
+  lean_free_small(texture2d);
+}
+
+static void raylib_texture2d_foreach(void *mod, b_lean_obj_arg fn) {}
+
+static lean_external_class *get_raylib_texture2d_class(void) {
+  if (raylib_texture2d_class == NULL) {
+    raylib_texture2d_class = lean_register_external_class(
+        &raylib_texture2d_finalizer, &raylib_texture2d_foreach);
+  }
+  return raylib_texture2d_class;
+}
+
+static inline Texture2D *texture2d_of_arg(b_lean_obj_arg texture2d) {
+  return (Texture2D *)lean_get_external_data(texture2d);
+}
+
+static lean_object *texture2d_obj_mk(Texture2D texture2d) {
+  // Allocate a pointer to the Texture2D struct on the heap
+  Texture2D *texture2d_ptr = (void *)lean_alloc_small_object(sizeof(Texture2D));
+  if (texture2d_ptr == NULL) {
+    return string_io_error("texture2d_obj_mk: lean_alloc_small_object failed");
+  }
+  *texture2d_ptr = texture2d;
+  // Register the Texture2D pointer in the Lean runtime
+  return lean_alloc_external(get_raylib_texture2d_class(),
+                             (void *)texture2d_ptr);
+}
+
+lean_obj_res texture2d_width(b_lean_obj_arg texture) {
+  return lean_uint32_to_nat(texture2d_of_arg(texture)->width);
+}
+
+lean_obj_res texture2d_height(b_lean_obj_arg texture) {
+  return lean_uint32_to_nat(texture2d_of_arg(texture)->height);
+}
+
+/* IMAGE  */
+
+static lean_external_class *raylib_image_class = NULL;
+
+// The finalizer is run by the lean runtime when an Image is garbage collected
+static void raylib_image_finalizer(void *image) {
+  UnloadImage(*(Image *)image);
+  lean_free_small(image);
+}
+
+static void raylib_image_foreach(void *mod, b_lean_obj_arg fn) {}
+
+static lean_external_class *get_raylib_image_class(void) {
+  if (raylib_image_class == NULL) {
+    raylib_image_class = lean_register_external_class(&raylib_image_finalizer,
+                                                      &raylib_image_foreach);
+  }
+  return raylib_image_class;
+}
+
+static inline Image *image_of_arg(b_lean_obj_arg image) {
+  return (Image *)lean_get_external_data(image);
+}
+
+static lean_object *image_obj_mk(Image image) {
+  // Allocate a pointer to the Image struct on the heap
+  Image *image_ptr = (void *)lean_alloc_small_object(sizeof(Image));
+  if (image_ptr == NULL) {
+    return string_io_error("image_obj_mk: lean_alloc_small_object failed");
+  }
+  *image_ptr = image;
+  // Register the Image pointer in the Lean runtime
+  return lean_alloc_external(get_raylib_image_class(), (void *)image_ptr);
+}
+
+lean_obj_res image_width(b_lean_obj_arg image) {
+  return lean_uint32_to_nat(image_of_arg(image)->width);
+}
+
+lean_obj_res image_height(b_lean_obj_arg image) {
+  return lean_uint32_to_nat(image_of_arg(image)->height);
+}
+
+// Load an image from a resource
+// Resources are loaded from the resources/ directory in the project
+lean_obj_res loadImage(b_lean_obj_arg resource_name_arg) {
+  // Load the data associated with the resource from the bundle
+  const char *resource_name = lean_string_cstr(resource_name_arg);
+  size_t size;
+  const void *data = getFileData(resource_name, &size);
+  if (data == NULL) {
+    return string_io_error("loadImage: getFileData failed");
+  }
+
+  // Extract the extension from the resource_name
+  const char *ext = GetFileExtension(resource_name);
+  if (ext == NULL) {
+    return string_io_error("loadImage: GetFileExtension failed");
+  }
+
+  // Load the image from the bundle data
+  Image image = LoadImageFromMemory(ext, data, size);
+  if (!IsImageReady(image)) {
+    return string_io_error("loadImage: LoadImageFromMemory failed");
+  }
+
+  lean_object *image_lean = image_obj_mk(image);
+  if (image_lean == NULL) {
+    return string_io_error("loadImage: image_obj_mk failed");
+  }
+
+  return lean_io_result_mk_ok(image_lean);
 }
 
 static inline Color color_of_arg(lean_obj_arg color) {
@@ -241,8 +366,10 @@ lean_obj_res drawRectangleRec(lean_obj_arg rectangle_arg,
   return IO_UNIT;
 }
 
-lean_obj_res getScreenToWorld2D(lean_obj_arg vector2_arg, lean_obj_arg camera_arg) {
-  Vector2 worldV = GetScreenToWorld2D(vector2_of_arg(vector2_arg), camera2D_of_arg(camera_arg));
+lean_obj_res getScreenToWorld2D(lean_obj_arg vector2_arg,
+                                lean_obj_arg camera_arg) {
+  Vector2 worldV = GetScreenToWorld2D(vector2_of_arg(vector2_arg),
+                                      camera2D_of_arg(camera_arg));
   return vector2_obj_mk(worldV);
 }
 
@@ -254,7 +381,8 @@ lean_obj_res getMouseWheelMove(void) {
   return lean_io_result_mk_ok(lean_box_float(GetMouseWheelMove()));
 }
 
-lean_obj_res checkCollisionPointRec(lean_obj_arg vector2_arg, lean_obj_arg rectangle_arg) {
+lean_obj_res checkCollisionPointRec(lean_obj_arg vector2_arg,
+                                    lean_obj_arg rectangle_arg) {
   Vector2 v = vector2_of_arg(vector2_arg);
   Rectangle r = rectangle_of_arg(rectangle_arg);
   return lean_io_result_mk_ok(lean_box(CheckCollisionPointRec(v, r)));
@@ -266,4 +394,37 @@ lean_obj_res isMouseButtonPressed(uint8_t button) {
 
 lean_obj_res getMousePosition(void) {
   return lean_io_result_mk_ok(vector2_obj_mk(GetMousePosition()));
+}
+
+lean_obj_res loadTextureFromImage(b_lean_obj_arg image_arg) {
+  Image *image = image_of_arg(image_arg);
+  Texture2D texture = LoadTextureFromImage(*image);
+  lean_obj_res texture2d_lean = texture2d_obj_mk(texture);
+  if (texture2d_lean == NULL) {
+    return string_io_error("loadTextureFromImage: texture2d_obj_mk failed");
+  }
+  return lean_io_result_mk_ok(texture2d_lean);
+}
+
+lean_obj_res drawTexture(b_lean_obj_arg texture_arg, lean_obj_arg posX_arg,
+                         lean_obj_arg posY_arg, lean_obj_arg tint_arg) {
+  Texture2D *texture = texture2d_of_arg(texture_arg);
+  int posX = lean_uint32_of_nat_mk(posX_arg);
+  int posY = lean_uint32_of_nat_mk(posY_arg);
+  Color tint = color_of_arg(tint_arg);
+  DrawTexture(*texture, posX, posY, tint);
+  return IO_UNIT;
+}
+
+lean_obj_res drawTexturePro(b_lean_obj_arg texture_arg,
+                            lean_obj_arg source_rect_arg,
+                            lean_obj_arg dest_rect_arg, lean_obj_arg origin_arg,
+                            double rotation, lean_obj_arg tint_arg) {
+  Texture2D *texture = texture2d_of_arg(texture_arg);
+  Rectangle source = rectangle_of_arg(source_rect_arg);
+  Rectangle dest = rectangle_of_arg(dest_rect_arg);
+  Vector2 origin = vector2_of_arg(origin_arg);
+  Color tint = color_of_arg(tint_arg);
+  DrawTexturePro(*texture, source, dest, origin, rotation, tint);
+  return IO_UNIT;
 }

@@ -120,3 +120,11 @@ inductive MouseButton where
   | extra
   | forward
   | back
+
+private opaque Texture2DP : NonemptyType
+def Texture2D := Texture2DP.type
+instance : Nonempty Texture2D := Texture2DP.property
+
+private opaque ImageP : NonemptyType
+def Image := ImageP.type
+instance : Nonempty Image := ImageP.property

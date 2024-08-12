@@ -45,3 +45,13 @@ To run the demo, run the following command in the project:
 ``` sh
 just run
 ```
+
+### Assets
+
+Assets used by the demo application are stored in the [resources](./resources) directory.
+
+
+| Asset                                | Attribution                                              |
+|--------------------------------------|----------------------------------------------------------|
+| [walter.png](./resources/walter.png) | [Liza Schulze](https://www.linkedin.com/in/lizaschulze/) |
+
