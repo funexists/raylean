@@ -54,4 +54,5 @@ Assets used by the demo application are stored in the [resources](./resources) d
 | Asset                                | Attribution                                              |
 |--------------------------------------|----------------------------------------------------------|
 | [walter.png](./resources/walter.png) | [Liza Schulze](https://www.linkedin.com/in/lizaschulze/) |
+| [Asset.svg](./resources/Asset.svg)   | [Liza Schulze](https://www.linkedin.com/in/lizaschulze/) |
 

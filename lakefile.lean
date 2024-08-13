@@ -17,6 +17,7 @@ lean_exe «raylib-lean» where
   root := `Main
   moreLinkArgs :=
     #[ "lib/libraylib.a"
+     , "lib/libresvg.a"
      , "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
      , "-framework", "IOKit"
      , "-framework", "Cocoa"
@@ -28,7 +29,8 @@ target raylib_bindings.o pkg : FilePath := do
   let includes := pkg.dir / "c" / "include"
   let srcJob ← inputTextFile <| pkg.dir / "c" / "raylib_bindings.c"
   let raylibInclude := pkg.dir / "raylib-5.0" / "src"
-  let weakArgs := #["-I", s!"{raylibInclude}", "-I", s!"{includes}"]
+  let resvgInclude := pkg.dir / "resvg-0.43.0" / "crates" / "c-api"
+  let weakArgs := #["-I", s!"{raylibInclude}", "-I", s!"{includes}", "-I", s!"{resvgInclude}"]
   buildLeanO oFile srcJob weakArgs #["-fPIC"]
 
 extern_lib libleanffi pkg := do
