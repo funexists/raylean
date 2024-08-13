@@ -15,6 +15,9 @@ jobs:
     steps:
       - uses: extractions/setup-just@v2
 
+      - name: Setup Rust
+        run: rustup toolchain install stable --profile minimal
+
       - name: install elan
         run: |
             set -o pipefail

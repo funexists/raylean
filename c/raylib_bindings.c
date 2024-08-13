@@ -1,6 +1,7 @@
 #include "bundle.h"
 #include <lean/lean.h>
 #include <raylib.h>
+#include <resvg.h>
 #include <stdint.h>
 
 #define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
@@ -17,6 +18,11 @@ int strcmp(const char *s1, const char *s2) {
   }
   return *(const unsigned char *)s1 - *(const unsigned char *)s2;
 }
+
+// leanc doesn't provide stdlib.h
+void *memcpy(void *, const void *, size_t);
+void *malloc(size_t);
+void *calloc(size_t, size_t);
 
 // The number of resources stored in the bundle
 size_t resourceInfoSize = sizeof(resource_infos) / sizeof(ResourceInfo);
@@ -120,13 +126,54 @@ lean_obj_res image_height(b_lean_obj_arg image) {
   return lean_uint32_to_nat(image_of_arg(image)->height);
 }
 
+Image loadImageFromData(const char *ext, const char *data, size_t size) {
+  if (strcmp(".svg", ext) == 0 || strcmp(".SVG", ext) == 0) {
+    Image image = {0};
+    resvg_options *opt = resvg_options_create();
+    resvg_render_tree *tree;
+    int err = resvg_parse_tree_from_data(data, size, opt, &tree);
+    resvg_options_destroy(opt);
+
+    if (err != RESVG_OK) {
+      TraceLog(LOG_ERROR, "resvg error: %i", err);
+      resvg_tree_destroy(tree);
+      return image;
+    }
+
+    resvg_size size = resvg_get_image_size(tree);
+    int width = (int)size.width;
+    int height = (int)size.height;
+
+    TraceLog(LOG_INFO, "resvg calculated width: %i, height: %i", width, height);
+
+    // Uses calloc here because the data should contain "premultiplied pixels" so
+    // perhaps it's assumed it's initialized memory.
+    //
+    // The size is specified in the resvg docs.
+    //
+    // We use RL_CALLOC instead of calloc because UnloadImage uses RL_FREE.
+    char *img = (char *) RL_CALLOC(width * height * 4, sizeof(char));
+    resvg_render(tree, resvg_transform_identity(), width, height, img);
+    resvg_tree_destroy(tree);
+
+    image.data = img;
+    image.width = width;
+    image.height = height;
+    image.mipmaps = 1;
+    image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+    return image;
+  } else {
+    return LoadImageFromMemory(ext, (unsigned char *)data, size);
+  }
+}
+
 // Load an image from a resource
 // Resources are loaded from the resources/ directory in the project
 lean_obj_res loadImage(b_lean_obj_arg resource_name_arg) {
   // Load the data associated with the resource from the bundle
   const char *resource_name = lean_string_cstr(resource_name_arg);
   size_t size;
-  const void *data = getFileData(resource_name, &size);
+  const char *data = getFileData(resource_name, &size);
   if (data == NULL) {
     return string_io_error("loadImage: getFileData failed");
   }
@@ -137,8 +184,8 @@ lean_obj_res loadImage(b_lean_obj_arg resource_name_arg) {
     return string_io_error("loadImage: GetFileExtension failed");
   }
 
-  // Load the image from the bundle data
-  Image image = LoadImageFromMemory(ext, data, size);
+  Image image = loadImageFromData(ext, data, size);
+
   if (!IsImageReady(image)) {
     return string_io_error("loadImage: LoadImageFromMemory failed");
   }
