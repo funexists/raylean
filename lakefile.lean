@@ -15,7 +15,7 @@ lean_lib «Examples» where
 lean_lib «Lens»
 
 @[default_target]
-lean_exe «raylib-lean» where
+lean_exe «raylean» where
   root := `Main
   moreLinkArgs :=
     #[ "lib/libraylib.a"
