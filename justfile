@@ -93,7 +93,7 @@ clean_all: clean clean_raylib clean_bundler clean_resvg clean_static_lib
 
 # run the demo executable
 run: build
-    .lake/build/bin/raylib-lean
+    .lake/build/bin/raylean
 
 build-bundler:
     mkdir -p {{parent_directory(makebundle_output_path)}}
