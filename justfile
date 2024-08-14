@@ -94,4 +94,4 @@ build-bundler:
 # run the bundler
 bundler: build-bundler
     mkdir -p {{parent_directory(bundle_h_path)}}
-    {{makebundle_output_path}} {{resource_dir}} {{bundle_h_path}}
+    {{makebundle_output_path}} {{justfile_directory()}} {{resource_dir}} {{bundle_h_path}}

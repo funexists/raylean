@@ -6,7 +6,7 @@ def screenWidth : Nat := 800
 def screenHeight : Nat := 600
 
 def render : IO Unit := do
-  let texture ← loadTextureFromImage (← loadImage "Asset.svg")
+  let texture ← loadTextureFromImage (← loadImage "resources/Asset.svg")
   let sourceRect : Rectangle :=
     { x := 0
     , y := 0

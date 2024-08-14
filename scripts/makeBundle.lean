@@ -11,12 +11,23 @@ structure ResourcesInfo where
   allData : ByteArray
   resources : Array ResourceInfo
 
+/-- Drops the given prefix from a list. It returns the original sequence if the
+sequence doesn't start with the given prefix.
+-/
+def List.dropPrefix [BEq α] (ls lsPrefix : List α) : List α :=
+  match ls, lsPrefix with
+  | xs, [] => xs
+  | (x :: xs), (y :: ys)  => if x == y then dropPrefix xs ys else ls
+  | _, _ => ls
+
 open IO.FS
 
-def readFile (entry : DirEntry) : IO FileData := do
-  return {filename := entry.fileName, data := (← readBinFile entry.path)}
+def readFile (entry : DirEntry) : ReaderT System.FilePath IO FileData := do
+  let rootDir ← read
+  let relFilePath :=  System.mkFilePath <| entry.path.components.dropPrefix rootDir.components
+  return {filename := relFilePath.toString, data := (← readBinFile entry.path)}
 
-def readFilesFromDir (dir : String) : IO (Array FileData) := do
+def readFilesFromDir (dir : System.FilePath) : ReaderT System.FilePath IO (Array FileData) := do
   (← System.FilePath.readDir dir).mapM readFile
 
 def mkResourcesInfo (ds : Array FileData) : ResourcesInfo := Id.run do
@@ -88,11 +99,20 @@ def assembleBundleFile (r : ResourcesInfo) : String :=
   let struct := "typedef struct {\n    const char* filename;\n    size_t offset;\n    size_t size;\n} ResourceInfo;\n"
   let infos := generateResourceInfoCode r.resources
   let data := generateDataCode r.allData
-  s!"#ifndef BUNDLE_H\n#define BUNDLE_H\n\n#include <stddef.h>\n\n{struct}\n{infos}\n{data}#endif // BUNDLE_H\n"
+  let rayleanBundleH := "RAYLEAN_BUNDLE_H"
+  s!"#ifndef {rayleanBundleH}\n#define {rayleanBundleH}\n\n#include <stddef.h>\n\n{struct}\n{infos}\n{data}#endif // {rayleanBundleH}\n"
 
 unsafe
 def main (args : List String) : IO Unit := do
-  let [dir, output] := args
-    | IO.println "Usage: makeBundle <directory> <outputfile>"
-  let ri := mkResourcesInfo (← readFilesFromDir dir)
-  writeFile output (assembleBundleFile ri)
+  let [rootDir, relFromDir, output] := args
+    | IO.println "Usage: makeBundle <rootDirectory> <relFromDir> <outputfile>"
+  let resourcePath := System.FilePath.join rootDir relFromDir
+  if
+    (← System.FilePath.pathExists resourcePath)
+    && (← System.FilePath.isDir resourcePath)
+    then
+      let ri := mkResourcesInfo (← readFilesFromDir resourcePath |>.run rootDir)
+      writeFile output (assembleBundleFile ri)
+    else do
+      IO.println "Usage: makeBundle <rootDirectory> <relFromDir> <outputfile>"
+      IO.println s!"{relFromDir} must be a subdirectory of {rootDir}"
