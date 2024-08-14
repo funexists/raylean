@@ -1,3 +1,12 @@
+# set to non-empty string to disable use of the resource bundle.
+#
+# e.g:
+#   just disableBundle=yes build
+disableBundle := ''
+
+# Flags used to configure the lake build
+lake_config_opts := if disableBundle == "" { "-K bundle=on" } else { "" }
+
 static_lib_path := join(justfile_directory(), "lib")
 raylib_src_path := join(justfile_directory(), "raylib-5.0", "src")
 extra_raylib_config_flags := ""
@@ -55,7 +64,7 @@ build_raylib:
 
 # build both the raylib library and the Lake project
 build: build_resvg build_raylib bundler
-    lake build
+    lake -R {{lake_config_opts}} build
 
 # clean only the Lake project
 clean:
@@ -94,4 +103,4 @@ build-bundler:
 # run the bundler
 bundler: build-bundler
     mkdir -p {{parent_directory(bundle_h_path)}}
-    {{makebundle_output_path}} {{resource_dir}} {{bundle_h_path}}
+    {{makebundle_output_path}} {{justfile_directory()}} {{resource_dir}} {{bundle_h_path}}

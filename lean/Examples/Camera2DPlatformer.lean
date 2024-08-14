@@ -120,7 +120,7 @@ def doRender : GameM Unit := do
 def main : IO Unit := do
   initWindow screenWidth screenHeight "2d camera"
   setTargetFPS fps
-  let walterTexture ← loadTextureFromImage (← loadImage "walter.png")
+  let walterTexture ← loadTextureFromImage (← loadImage "resources/walter.png")
   doRender
   |>.run' initGameState
   |>.run (initGameEnv walterTexture)

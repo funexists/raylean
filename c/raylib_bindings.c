@@ -1,4 +1,3 @@
-#include "bundle.h"
 #include <lean/lean.h>
 #include <raylib.h>
 #include <resvg.h>
@@ -6,9 +5,10 @@
 
 #define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
 
-static inline lean_obj_res string_io_error(const char *msg) {
-  return lean_io_result_mk_error(lean_mk_io_user_error(lean_mk_string(msg)));
-}
+// leanc doesn't provide stdlib.h
+void *memcpy(void *, const void *, size_t);
+void *malloc(size_t);
+void *calloc(size_t, size_t);
 
 // leanc doesn't provide string.h
 int strcmp(const char *s1, const char *s2) {
@@ -19,23 +19,43 @@ int strcmp(const char *s1, const char *s2) {
   return *(const unsigned char *)s1 - *(const unsigned char *)s2;
 }
 
-// leanc doesn't provide stdlib.h
-void *memcpy(void *, const void *, size_t);
-void *malloc(size_t);
-void *calloc(size_t, size_t);
+#ifdef RAYLEAN_NO_BUNDLE
+
+void bundle_free_resource(void *data) {
+  UnloadFileData(data);
+}
+
+void* bundle_load_resource(const char* filepath, size_t *size) {
+  int dataSize;
+  void* data = (void*) LoadFileData(filepath, &dataSize);
+  *size = dataSize;
+  return data;
+}
+
+#else
+
+#include "bundle.h"
 
 // The number of resources stored in the bundle
 size_t resourceInfoSize = sizeof(resource_infos) / sizeof(ResourceInfo);
 
+void bundle_free_resource(void *data) {}
+
 // Load data from from the bundle
-const void *getFileData(const char *filename, size_t *size) {
+void *bundle_load_resource(const char *filename, size_t *size) {
   for (size_t i = 0; i < resourceInfoSize; i++) {
     if (strcmp(resource_infos[i].filename, filename) == 0) {
       *size = resource_infos[i].size;
-      return &bundle_data[resource_infos[i].offset];
+      return (void*) &bundle_data[resource_infos[i].offset];
     }
   }
   return NULL;
+}
+
+#endif
+
+static inline lean_obj_res string_io_error(const char *msg) {
+  return lean_io_result_mk_error(lean_mk_io_user_error(lean_mk_string(msg)));
 }
 
 /* TEXTURE */
@@ -173,7 +193,7 @@ lean_obj_res loadImage(b_lean_obj_arg resource_name_arg) {
   // Load the data associated with the resource from the bundle
   const char *resource_name = lean_string_cstr(resource_name_arg);
   size_t size;
-  const char *data = getFileData(resource_name, &size);
+  const char *data = bundle_load_resource(resource_name, &size);
   if (data == NULL) {
     return string_io_error("loadImage: getFileData failed");
   }
@@ -185,6 +205,8 @@ lean_obj_res loadImage(b_lean_obj_arg resource_name_arg) {
   }
 
   Image image = loadImageFromData(ext, data, size);
+
+  bundle_free_resource((void*) data);
 
   if (!IsImageReady(image)) {
     return string_io_error("loadImage: LoadImageFromMemory failed");

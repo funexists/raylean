@@ -1,6 +1,8 @@
 import Lake
 open System Lake DSL
 
+def optionUseBundle : Bool := get_config? bundle == some "on"
+
 package «lean-raylib» where
   srcDir := "lean"
 
@@ -31,7 +33,10 @@ target raylib_bindings.o pkg : FilePath := do
   let raylibInclude := pkg.dir / "raylib-5.0" / "src"
   let resvgInclude := pkg.dir / "resvg-0.43.0" / "crates" / "c-api"
   let weakArgs := #["-I", s!"{raylibInclude}", "-I", s!"{includes}", "-I", s!"{resvgInclude}"]
-  buildLeanO oFile srcJob weakArgs #["-fPIC"]
+  let mut traceArgs := #["-fPIC"]
+  if not (optionUseBundle) then
+    traceArgs := traceArgs ++ #["-DRAYLEAN_NO_BUNDLE"]
+  buildLeanO oFile srcJob weakArgs traceArgs
 
 extern_lib libleanffi pkg := do
   let ffiO ← raylib_bindings.o.fetch
