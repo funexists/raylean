@@ -27,6 +27,9 @@ raylib_config_flags := ""
 # Raylib CUSTOM_CFLAGS make parameter
 raylib_custom_cflags := raylib_config_flags + " " + raylib_os_custom_cflags
 
+# Raylib CC make paramter
+raylib_cc_parameter := if os() == "macos" { "/usr/bin/clang" } else { "gcc" }
+
 static_lib_path := join(justfile_directory(), "lib")
 raylib_src_path := join(justfile_directory(), "raylib-5.0", "src")
 resource_dir := join(justfile_directory(), "resources")
@@ -64,7 +67,7 @@ build_raylib:
     if [ ! -f "{{static_lib_path}}/libraylib.a" ]; then
         mkdir -p {{static_lib_path}}
         make -C {{raylib_src_path}} \
-            CC=/usr/bin/clang \
+            CC={{raylib_cc_parameter}} \
             PLATFORM=PLATFORM_DESKTOP \
             RAYLIB_LIBTYPE=STATIC \
             RAYLIB_RELEASE_PATH={{static_lib_path}} \
