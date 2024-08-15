@@ -14,7 +14,14 @@ For now only macOS is supported.
 
 ### Dependencies
 
+Raylean has several dependencies:
 
+* [Lean](https://lean-lang.org), which we use for development of games.
+* [Just](https://github.com/casey/just), as a replacement for Make.
+* XCode for macOS SDK frameworks like OpenGL.
+* [Rust](https://www.rust-lang.org/) for building resvg, which provides SVG support.
+
+You need to install all four to build Raylean. Below follows instructions for each.
 
 #### [Lean](https://lean-lang.org)
 
