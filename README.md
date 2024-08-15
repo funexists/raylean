@@ -14,6 +14,8 @@ For now only macOS is supported.
 
 ### Dependencies
 
+
+
 #### [Lean](https://lean-lang.org)
 
 Use the [official documentation](https://lean-lang.org/lean4/doc/quickstart.html) to setup Lean.
@@ -35,6 +37,14 @@ Install by running:
 ``` sh
 xcode-select --install
 ```
+
+#### [Rust](https://www.rust-lang.org/)
+
+```sh
+curl https://sh.rustup.rs -sSf | sh
+```
+
+Or use the [official documentation](https://www.rust-lang.org/tools/install) to setup Rust.
 
 ### Build and Run
 
