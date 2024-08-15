@@ -17,14 +17,16 @@ lean_lib «Lens»
 @[default_target]
 lean_exe «raylean» where
   root := `Main
-  moreLinkArgs :=
-    #[ "lib/libraylib.a"
-     , "lib/libresvg.a"
-     , "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
-     , "-framework", "IOKit"
-     , "-framework", "Cocoa"
-     , "-framework", "OpenGL"
-     ]
+  moreLinkArgs := Id.run do
+    let mut args := #[ "lib/libraylib.a" , "lib/libresvg.a"]
+    if (← System.Platform.isOSX) then
+      args := args ++
+        #[ "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+         , "-framework", "IOKit"
+         , "-framework", "Cocoa"
+         , "-framework", "OpenGL"
+         ]
+    args
 
 target raylib_bindings.o pkg : FilePath := do
   let oFile := pkg.buildDir / "c" / "raylib_bindings.o"
