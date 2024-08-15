@@ -73,5 +73,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: linux_x86_64-binary
-          path: raylean_linux-x86_64.tar.gz.tar.gz
+          path: raylean_linux-x86_64.tar.gz
           if-no-files-found: error
