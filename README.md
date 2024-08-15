@@ -2,6 +2,10 @@
 
 Lean4 bindings for [raylib](http://www.raylib.com/).
 
+## Community
+
+If you want to contribute to Raylean, you can find us on [Discord](https://discord.gg/mdgKuGAMQj) <a href="https://discord.gg/mdgKuGAMQj"><img alt="Discord" title="Raylean's Discord" height="16" width="16" src="./resources/discord.svg"/></a>
+
 ## How build the demo executable target (MacOS only)
 
 The project comes with a demo executable target. To build and run this use the provided [justfile](./justfile).
