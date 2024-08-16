@@ -7,9 +7,31 @@ disableBundle := ''
 # Flags used to configure the lake build
 lake_config_opts := if disableBundle == "" { "-K bundle=on" } else { "" }
 
+# Raylib CUSTOM_FLAGS tailed for the current os
+#
+# The macos differ from the raylib release workflow.
+# We require `-fno-objc-msgsend-selector-stubs` to be set.
+#
+# If this is not set then the clang 15 linker bundled with lean gives the
+# following error:
+#
+#   ld64.lld: error: undefined symbol: _objc_msgSend$update
+#
+# See https://stackoverflow.com/a/74054943
+#
+raylib_os_custom_cflags := if os() == "macos" { "-target arm64-apple-macos11 -DGL_SILENCE_DEPRECATION -fno-objc-msgsend-selector-stubs"  } else { "" }
+
+# Enable extra raylib configuration flags
+raylib_config_flags := ""
+
+# Raylib CUSTOM_CFLAGS make parameter
+raylib_custom_cflags := raylib_config_flags + " " + raylib_os_custom_cflags
+
+# Raylib CC make paramter
+raylib_cc_parameter := if os() == "macos" { "/usr/bin/clang" } else { "gcc" }
+
 static_lib_path := join(justfile_directory(), "lib")
 raylib_src_path := join(justfile_directory(), "raylib-5.0", "src")
-extra_raylib_config_flags := ""
 resource_dir := join(justfile_directory(), "resources")
 bundle_h_path := join(justfile_directory(), "c", "include", "bundle.h")
 makebundle_src_path := join(justfile_directory(), "scripts", "makeBundle.lean")
@@ -44,22 +66,12 @@ build_raylib:
     set -euo pipefail
     if [ ! -f "{{static_lib_path}}/libraylib.a" ]; then
         mkdir -p {{static_lib_path}}
-        # This build differs from the raylib release workflow.
-        # We require `-fno-objc-msgsend-selector-stubs` to be set.
-        #
-        # If this is not set then the clang 15 linker bundled with lean gives the
-        # following error:
-        #
-        #   ld64.lld: error: undefined symbol: _objc_msgSend$update
-        #
-        # See https://stackoverflow.com/a/74054943
-        #
         make -C {{raylib_src_path}} \
-            CC=/usr/bin/clang \
+            CC={{raylib_cc_parameter}} \
             PLATFORM=PLATFORM_DESKTOP \
             RAYLIB_LIBTYPE=STATIC \
             RAYLIB_RELEASE_PATH={{static_lib_path}} \
-            CUSTOM_CFLAGS="{{extra_raylib_config_flags}} -target arm64-apple-macos11 -DGL_SILENCE_DEPRECATION -fno-objc-msgsend-selector-stubs"
+            CUSTOM_CFLAGS="{{raylib_custom_cflags}}"
     fi
 
 # build both the raylib library and the Lake project
