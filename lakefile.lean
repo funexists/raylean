@@ -12,6 +12,8 @@ lean_lib «Raylean» where
 lean_lib «Examples» where
   precompileModules := true
 
+lean_lib «ECS»
+
 lean_lib «Lens»
 
 @[default_target]
