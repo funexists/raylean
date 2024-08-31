@@ -116,3 +116,9 @@ build-bundler:
 bundler: build-bundler
     mkdir -p {{parent_directory(bundle_h_path)}}
     {{makebundle_output_path}} {{justfile_directory()}} {{resource_dir}} {{bundle_h_path}}
+
+build-ecs-example: build_resvg build_raylib bundler
+    lake -R {{lake_config_opts}} build ecs-example
+
+run-ecs-example: build-ecs-example
+    .lake/build/bin/ecs-example
