@@ -58,8 +58,8 @@ def dumpState : System World Unit := do
     IO.println s!"position : ({p.position.x}, {p.position.y}) velocity : ({v.velocity.x}, {v.velocity.y})")
 
 def game : System World Unit := do
-  newEntity_ ({position := ⟨0,0⟩ : Position}, {velocity := ⟨10,11⟩ : Velocity})
-  newEntity_ ({position := ⟨1,0⟩ : Position}, {velocity := ⟨-5,-2⟩ : Velocity})
+  asNewEntity_ (Position × Velocity) (⟨0,0⟩, ⟨10,11⟩)
+  asNewEntity_ (Position × Velocity) (⟨1,0⟩, ⟨-5,-2⟩)
   dumpState
   cmap update
   dumpState
