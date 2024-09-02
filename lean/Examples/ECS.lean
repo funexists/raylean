@@ -7,40 +7,17 @@ structure Position where
 structure Velocity where
   velocity : Vector2
 
-instance : StorageT Position where
-  storageType := MapStorage Position
+axiom StoragePosition : StorageFam Position = MapStorage Position
+instance : FamilyDef StorageFam Position (MapStorage Position) := ⟨StoragePosition⟩
 
-instance : Elem (StorageT.storageType Position) where
-  elemType := inferInstanceAs (Elem (MapStorage Position)) |>.elemType
-
-instance : ExplGet (StorageT.storageType Position) where
-  explGet := inferInstanceAs (ExplGet (MapStorage Position)) |>.explGet
-  explExists := inferInstanceAs (ExplGet (MapStorage Position)) |>.explExists
-
-instance : ExplSet (StorageT.storageType Position) where
-  explSet := inferInstanceAs (ExplSet (MapStorage Position) ) |>.explSet
-
-instance : Component Position where
+instance : @Component Position (MapStorage Position) Position _ _ where
   constraint := rfl
 
-instance : StorageT Velocity where
-  storageType := MapStorage Velocity
+axiom StorageVelocity : StorageFam Velocity = MapStorage Velocity
+instance : FamilyDef StorageFam Velocity (MapStorage Velocity) := ⟨StorageVelocity⟩
 
-instance : Elem (StorageT.storageType Velocity) where
-  elemType := inferInstanceAs (Elem (MapStorage Velocity)) |>.elemType
-
-instance : Component Velocity where
+instance : @Component Velocity (MapStorage Velocity) Velocity _ _ where
   constraint := rfl
-
-instance : ExplSet (StorageT.storageType (Position × Velocity)) where
-  explSet := inferInstanceAs (ExplSet (MapStorage Position × MapStorage Velocity) ) |>.explSet
-
-instance : ExplMembers (StorageT.storageType (Position × Velocity)) where
-  explMembers := inferInstanceAs (ExplMembers (MapStorage Position × MapStorage Velocity) ) |>.explMembers
-
-instance : ExplGet (StorageT.storageType (Position × Velocity)) where
-  explGet := inferInstanceAs (ExplGet (MapStorage Position × MapStorage Velocity) ) |>.explGet
-  explExists := inferInstanceAs (ExplGet (MapStorage Position × MapStorage Velocity) ) |>.explExists
 
 -- Stores must be in Type 1 otherwise ReaderT w IO a will not compile
 -- because IO is Type 1 -> Type 1.
@@ -56,13 +33,13 @@ structure World where
   velocityStore : VelocityStore
   entityStore : EntityStore
 
-instance : Has World Position where
+instance : @Has World Position (MapStorage Position) _ where
   getStore := (·.positionStore) <$> read
 
-instance : Has World Velocity where
+instance : @Has World Velocity (MapStorage Velocity) _ where
   getStore := (·.velocityStore) <$> read
 
-instance : Has World EntityCounter where
+instance : @Has World EntityCounter (GlobalStorage EntityCounter) _ where
   getStore := (·.entityStore) <$> read
 
 def initWorld : IO World := do
