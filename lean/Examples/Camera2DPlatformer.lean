@@ -1,4 +1,4 @@
-import «Raylib»
+import «Raylean»
 
 import Examples.Camera2DPlatformer.Types
 open Types
@@ -14,7 +14,7 @@ def player_jump_speed : Float := 350
 def player_horizontal_speed : Float := 200
 def player_width : Float := 40
 def player_height : Float := 1.38 * player_width
-def backgroundColor : Color := Color.Raylib.lightgray
+def backgroundColor : Color := Color.Raylean.lightgray
 
 def initPlayer : Player := { position := {x := 400, y := 200}, speed := 0, canJump := false }
 
@@ -32,19 +32,19 @@ def initGameEnv (playerTexture : Texture2D) : GameEnv := {
  items := [
   { rect := {x := 0, y := 0, width := 1000, height := 400 }
     blocking := false,
-    color := Color.Raylib.lightgray },
+    color := Color.Raylean.lightgray },
   { rect := {x := 0, y := 400, width := 1000, height := 200 }
     blocking := true,
-    color := Color.Raylib.gray },
+    color := Color.Raylean.gray },
   { rect := {x := 300, y := 200, width := 400, height := 10 }
     blocking := true,
-    color := Color.Raylib.gray },
+    color := Color.Raylean.gray },
   { rect := {x := 250, y := 300, width := 100, height := 10 }
     blocking := true,
-    color := Color.Raylib.gray },
+    color := Color.Raylean.gray },
   { rect := {x := 650, y := 300, width := 100, height := 10 }
     blocking := true,
-    color := Color.Raylib.gray },
+    color := Color.Raylean.gray },
 ] }
 
 def updatePlayer (delta : Float) : GameM Unit := do
