@@ -73,7 +73,7 @@ def black       := { r:=0, g:=0, b:=0, a:=255 : Color }
 def magenta     := { r := 255, g := 0, b := 255, a := 255 : Color  }
 def transparent := { r:=0, g:=0, b:=0, a:=0 : Color }
 
-namespace Raylib
+namespace Raylean
 
 def lightgray  := { r := 200, g := 200, b := 200, a := 255 : Color  }
 def gray       := { r := 130, g := 130, b := 130, a := 255 : Color  }
@@ -98,7 +98,7 @@ def brown      := { r := 127, g := 106, b := 79, a := 255 : Color  }
 def darkbrown  := { r := 76, g := 63, b := 47, a := 255 : Color  }
 def raywhite   := { r := 245, g := 245, b := 245, a := 255 : Color  }
 
-end Raylib
+end Raylean
 
 end Color
 

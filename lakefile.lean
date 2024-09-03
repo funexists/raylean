@@ -3,10 +3,10 @@ open System Lake DSL
 
 def optionUseBundle : Bool := get_config? bundle == some "on"
 
-package «lean-raylib» where
+package «raylean» where
   srcDir := "lean"
 
-lean_lib «Raylib» where
+lean_lib «Raylean» where
   precompileModules := true
 
 lean_lib «Examples» where

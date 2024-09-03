@@ -1,4 +1,4 @@
-import «Raylib».Types
+import «Raylean».Types
 
 /- Window-related functions -/
 

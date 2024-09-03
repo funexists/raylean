@@ -1,4 +1,4 @@
-import «Raylib»
+import «Raylean»
 import Examples
 
 import Examples.Elab
@@ -20,8 +20,8 @@ def optionHeight : Nat := 80
 def screenHeight : Nat := Demo.all.size * optionHeight
 def fps : Nat := 60
 def textSize : Nat := 20
-def lightSelectorColor : Color := Color.Raylib.blue
-def darkSelectorColor : Color := Color.Raylib.darkblue
+def lightSelectorColor : Color := Color.Raylean.blue
+def darkSelectorColor : Color := Color.Raylean.darkblue
 def selectorTextColor : Color := Color.black
 
 structure DemoInfo where

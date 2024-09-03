@@ -1,4 +1,4 @@
-import «Raylib»
+import «Raylean»
 
 namespace Window
 
@@ -24,7 +24,7 @@ def render : IO Unit := do
 
   while not (← windowShouldClose) do
     renderFrame do
-      clearBackground Color.Raylib.gold
+      clearBackground Color.Raylean.gold
       drawFPS 100 100
       let c := match (← IO.rand 0 6) with
       | 0 => Color.red

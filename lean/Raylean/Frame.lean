@@ -1,4 +1,4 @@
-import «Raylib».Core
+import «Raylean».Core
 
 def renderFrame [Monad m] [MonadLiftT IO m] (mkFrame : m Unit) : m Unit := do
     beginDrawing
