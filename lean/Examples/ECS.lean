@@ -19,19 +19,10 @@ instance : FamilyDef StorageFam Velocity (MapStorage Velocity) := ⟨StorageVelo
 instance : @Component Velocity (MapStorage Velocity) Velocity _ _ where
   constraint := rfl
 
--- Stores must be in Type 1 otherwise ReaderT w IO a will not compile
--- because IO is Type 1 -> Type 1.
--- These should also be associated to the
-def PositionStore : Type := MapStorage Position
-
-def VelocityStore : Type := MapStorage Velocity
-
-def EntityStore : Type := GlobalStorage EntityCounter
-
 structure World where
-  positionStore : PositionStore
-  velocityStore : VelocityStore
-  entityStore : EntityStore
+  positionStore : MapStorage Position
+  velocityStore : MapStorage Velocity
+  entityStore : GlobalStorage EntityCounter
 
 instance : @Has World Position (MapStorage Position) _ where
   getStore := (·.positionStore) <$> read
@@ -60,6 +51,7 @@ def dumpState : System World Unit := do
 def game : System World Unit := do
   asNewEntity_ (Position × Velocity) (⟨0,0⟩, ⟨10,11⟩)
   asNewEntity_ (Position × Velocity) (⟨1,0⟩, ⟨-5,-2⟩)
+  set' global {position := ⟨0,0⟩ : Position}
   dumpState
   cmap update
   dumpState
