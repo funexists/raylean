@@ -1,5 +1,8 @@
-import Raylib
+import Raylean
 import ECS
+
+open Raylean
+open Raylean.Types
 
 structure Position where
   position : Vector2
