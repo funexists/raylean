@@ -5,6 +5,9 @@ open Types
 
 namespace Camera2DPlatformer
 
+open Raylean
+open Raylean.Types
+
 def screenWidth : Nat := 800
 def screenHeight : Nat := 450
 def fps : Nat := 60

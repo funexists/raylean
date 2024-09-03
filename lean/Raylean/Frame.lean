@@ -1,5 +1,9 @@
 import «Raylean».Core
 
+namespace Raylean
+
+open Raylean.Types
+
 def renderFrame [Monad m] [MonadLiftT IO m] (mkFrame : m Unit) : m Unit := do
     beginDrawing
     mkFrame

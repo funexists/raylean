@@ -5,6 +5,9 @@ import Examples.Elab
 
 namespace Selector
 
+open Raylean
+open Raylean.Types
+
 /-- Demos supported in the selector --/
 inductive Demo where
   | jessica

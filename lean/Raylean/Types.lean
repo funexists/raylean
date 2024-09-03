@@ -1,3 +1,7 @@
+namespace Raylean
+
+namespace Types
+
 structure Vector2 where
   x : Float
   y : Float
@@ -125,6 +129,22 @@ private opaque Texture2DP : NonemptyType
 def Texture2D := Texture2DP.type
 instance : Nonempty Texture2D := Texture2DP.property
 
+-- fields of Texture2D defined directly using a namespace must be in the same
+-- namespace as Texture2D
+@[extern "texture2d_width"]
+opaque Texture2D.width (texture2d : @& Texture2D) : Nat
+
+@[extern "texture2d_height"]
+opaque Texture2D.height (texture2d : @& Texture2D) : Nat
+
 private opaque ImageP : NonemptyType
 def Image := ImageP.type
 instance : Nonempty Image := ImageP.property
+
+-- fields of Image defined directly using a namespace must be in the same
+-- namespace as Image
+@[extern "image_width"]
+opaque Image.width (image : @& Image) : Nat
+
+@[extern "image_height"]
+opaque Image.height (image : @& Image) : Nat

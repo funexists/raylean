@@ -2,6 +2,9 @@ import «Raylean»
 
 namespace Window
 
+open Raylean.Types
+open Raylean
+
 def screenWidth : Nat := 800
 def screenHeight : Nat := 600
 
