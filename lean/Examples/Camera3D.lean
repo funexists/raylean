@@ -2,6 +2,9 @@ import «Raylean»
 
 namespace Camera3D
 
+open Raylean
+open Raylean.Types
+
 private def screenWidth : Nat := 1000
 private def screenHeight : Nat := 600
 private def fps : Nat := 120

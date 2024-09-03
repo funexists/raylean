@@ -3,6 +3,8 @@ import Lens
 
 namespace Types
 
+open Raylean.Types
+
 structure Player where
   position : Vector2
   speed : Float

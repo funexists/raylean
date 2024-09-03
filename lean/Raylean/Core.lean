@@ -1,5 +1,9 @@
 import «Raylean».Types
 
+namespace Raylean
+
+open Raylean.Types
+
 /- Window-related functions -/
 
 @[extern "initWindow"]
@@ -111,19 +115,8 @@ opaque drawCubeWires : (position : Vector3) → (width : Float) → (height : Fl
 @[extern "drawGrid"]
 opaque drawGrid : (slices : Nat) → (spacing : Float) → IO Unit
 
-@[extern "image_width"]
-opaque Image.width (image : @& Image) : Nat
-
-@[extern "image_height"]
-opaque Image.height (image : @& Image) : Nat
 @[extern "loadImage"]
 opaque loadImage : (resourceName : @& String) -> IO Image
-
-@[extern "texture2d_width"]
-opaque Texture2D.width (texture2d : @& Texture2D) : Nat
-
-@[extern "texture2d_height"]
-opaque Texture2D.height (texture2d : @& Texture2D) : Nat
 
 @[extern "loadTextureFromImage"]
 opaque loadTextureFromImage : (image : @& Image) -> IO Texture2D

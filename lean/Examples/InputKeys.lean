@@ -2,6 +2,9 @@ import «Raylean»
 
 namespace InputKeys
 
+open Raylean
+open Raylean.Types
+
 private def screenWidth : Nat := 800
 private def screenHeight : Nat := 450
 
