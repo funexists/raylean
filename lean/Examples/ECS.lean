@@ -14,34 +14,7 @@ structure Velocity where
 structure Magic where
   magic : Nat
 
-makeMapComponent Position
-makeMapComponent Velocity
-makeMapComponent Magic
-
-structure World where
-  positionStore : MapStorage Position
-  velocityStore : MapStorage Velocity
-  magicStore : MapStorage Magic
-  entityStore : GlobalStorage EntityCounter
-
-instance : @Has World Position (MapStorage Position) _ where
-  getStore := (·.positionStore) <$> read
-
-instance : @Has World Velocity (MapStorage Velocity) _ where
-  getStore := (·.velocityStore) <$> read
-
-instance : @Has World Magic (MapStorage Magic) _ where
-  getStore := (·.magicStore) <$> read
-
-instance : @Has World EntityCounter (GlobalStorage EntityCounter) _ where
-  getStore := (·.entityStore) <$> read
-
-def initWorld : IO World := do
-  let positionStore : MapStorage Position ← ExplInit.explInit
-  let velocityStore : MapStorage Velocity ← ExplInit.explInit
-  let magicStore : MapStorage Magic ← ExplInit.explInit
-  let entityStore : GlobalStorage EntityCounter ← ExplInit.explInit
-  pure {positionStore,velocityStore,magicStore,entityStore}
+makeWorldAndComponents Position Velocity Magic
 
 def update (pv : Position × Velocity) : Position :=
   let (p, v) := pv
