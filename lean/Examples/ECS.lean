@@ -3,6 +3,7 @@ import ECS
 
 open Raylean
 open Raylean.Types
+open ECS
 
 structure Position where
   position : Vector2
@@ -13,23 +14,9 @@ structure Velocity where
 structure Magic where
   magic : Nat
 
-axiom StoragePosition : StorageFam Position = MapStorage Position
-instance : FamilyDef StorageFam Position (MapStorage Position) := ⟨StoragePosition⟩
-
-instance : @Component Position (MapStorage Position) Position _ _ where
-  constraint := rfl
-
-axiom StorageVelocity : StorageFam Velocity = MapStorage Velocity
-instance : FamilyDef StorageFam Velocity (MapStorage Velocity) := ⟨StorageVelocity⟩
-
-instance : @Component Velocity (MapStorage Velocity) Velocity _ _ where
-  constraint := rfl
-
-axiom StorageMagic : StorageFam Magic = MapStorage Magic
-instance : FamilyDef StorageFam Magic (MapStorage Magic) := ⟨StorageMagic⟩
-
-instance : @Component Magic (MapStorage Magic) Magic _ _ where
-  constraint := rfl
+makeMapComponent Position
+makeMapComponent Velocity
+makeMapComponent Magic
 
 structure World where
   positionStore : MapStorage Position
