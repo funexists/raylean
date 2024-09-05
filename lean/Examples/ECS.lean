@@ -5,6 +5,8 @@ open Raylean
 open Raylean.Types
 open ECS
 
+namespace Example
+
 structure Position where
   position : Vector2
 
@@ -35,5 +37,7 @@ def game : System World Unit := do
   cmap update
   dumpState
 
+end Example
+
 def main : IO Unit := do
-  runSystem game (← initWorld)
+  runSystem Example.game (← Example.initWorld)
