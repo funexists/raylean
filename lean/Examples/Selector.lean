@@ -15,6 +15,7 @@ inductive Demo where
   | platformer2d
   | cube3d
   | inputKeys
+  | basicECS
 
 def Demo.all := allElements Demo
 
@@ -39,6 +40,7 @@ def mkDemoInfo : Demo -> DemoInfo
    | .cube3d => {start := Camera3D.camera3D, title := "3D Cube"}
    | .inputKeys => {start := InputKeys.inputKeys, title := "Input keys"}
    | .jessica => {start := JessicaCantSwim.main, title := "Jessica can't swim"}
+   | .basicECS => {start := BasicECS.main, title := "Basic ECS"}
 
 structure DemoRenderInfo where
   /-- The action that starts the demo --/

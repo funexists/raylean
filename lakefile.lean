@@ -12,11 +12,26 @@ lean_lib «Raylean» where
 lean_lib «Examples» where
   precompileModules := true
 
+lean_lib «ECS»
+
 lean_lib «Lens»
 
 @[default_target]
 lean_exe «raylean» where
   root := `Main
+  moreLinkArgs := Id.run do
+    let mut args := #[ "lib/libraylib.a" , "lib/libresvg.a"]
+    if (← System.Platform.isOSX) then
+      args := args ++
+        #[ "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+         , "-framework", "IOKit"
+         , "-framework", "Cocoa"
+         , "-framework", "OpenGL"
+         ]
+    args
+
+lean_exe «ecs-example» where
+  root := `Examples.ECS
   moreLinkArgs := Id.run do
     let mut args := #[ "lib/libraylib.a" , "lib/libresvg.a"]
     if (← System.Platform.isOSX) then

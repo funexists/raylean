@@ -2,7 +2,7 @@ import Raylean.Types
 
 namespace Raylean
 
-namespace Math
+namespace Types
 
 namespace Vector2
 
