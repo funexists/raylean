@@ -19,6 +19,16 @@ inductive Demo where
 
 def Demo.all := allElements Demo
 
+def stringToDemo (s : String) : Option Demo :=
+  match s.trim.toLower with
+  | "jessica" => some .jessica
+  | "window" => some .window
+  | "platformer2d" => some .platformer2d
+  | "cube3d" => some .cube3d
+  | "inputkeys" => some .inputKeys
+  | "basicecs" => some .basicECS
+  | _ => none
+
 def screenWidth : Nat := 800
 def optionHeight : Nat := 80
 def screenHeight : Nat := Demo.all.size * optionHeight
@@ -87,5 +97,11 @@ def selector : IO Unit := do
   initWindow Selector.screenWidth Selector.screenHeight "Select a demo"
   setTargetFPS 60
   start
+
+/-- Directly launch a demo by name, otherwise start the selector --/
+def tryLaunchDemo (name : String) : IO Unit :=
+  match stringToDemo name with
+  | none => selector
+  | some d => mkDemoInfo d |>.start
 
 end Selector
