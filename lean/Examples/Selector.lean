@@ -16,6 +16,7 @@ inductive Demo where
   | cube3d
   | inputKeys
   | basicECS
+  | orbital
 
 def Demo.all := allElements Demo
 
@@ -27,6 +28,7 @@ def stringToDemo (s : String) : Option Demo :=
   | "cube3d" => some .cube3d
   | "inputkeys" => some .inputKeys
   | "basicecs" => some .basicECS
+  | "orbital" => some .orbital
   | _ => none
 
 def screenWidth : Nat := 800
@@ -51,6 +53,7 @@ def mkDemoInfo : Demo -> DemoInfo
    | .inputKeys => {start := InputKeys.inputKeys, title := "Input keys"}
    | .jessica => {start := JessicaCantSwim.main, title := "Jessica can't swim"}
    | .basicECS => {start := BasicECS.main, title := "Basic ECS"}
+   | .orbital => {start := Orbital.main, title := "Orbital"}
 
 structure DemoRenderInfo where
   /-- The action that starts the demo --/

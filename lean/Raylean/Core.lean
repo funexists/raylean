@@ -82,6 +82,9 @@ opaque updateCamera : (camera : Camera3D) → (mode : CameraMode) → IO Camera3
 @[extern "drawCircleV"]
 opaque drawCircleV : (center : Vector2) → (radius : Float) → (color : Color) → IO Unit
 
+@[extern "drawLineV"]
+opaque drawLineV : (startPos : Vector2) → (endPos : Vector2) → (color : Color) → IO Unit
+
 @[extern "drawRectangleRec"]
 opaque drawRectangleRec : (rectangle : Rectangle) → (color : Color) → IO Unit
 
