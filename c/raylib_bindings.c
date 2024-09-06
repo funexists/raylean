@@ -497,3 +497,11 @@ lean_obj_res drawTexturePro(b_lean_obj_arg texture_arg,
   DrawTexturePro(*texture, source, dest, origin, rotation, tint);
   return IO_UNIT;
 }
+
+lean_obj_res drawLineV(lean_obj_arg startPos_arg, lean_obj_arg endPos_arg, lean_obj_arg color_arg) {
+  Vector2 startPos = vector2_of_arg(startPos_arg);
+  Vector2 endPos = vector2_of_arg(endPos_arg);
+  Color color = color_of_arg(color_arg);
+  DrawLineV(startPos, endPos, color);
+  return IO_UNIT;
+}
