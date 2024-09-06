@@ -104,8 +104,8 @@ clean_resvg:
 clean_all: clean clean_raylib clean_bundler clean_resvg clean_static_lib
 
 # run the demo executable
-run: build
-    .lake/build/bin/raylean
+run *demoName: build
+    .lake/build/bin/raylean {{demoName}}
 
 build-bundler:
     mkdir -p {{parent_directory(makebundle_output_path)}}
