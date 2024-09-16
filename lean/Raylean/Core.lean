@@ -23,7 +23,7 @@ opaque disableCursor : IO Unit
 /- Drawing-related functions -/
 
 @[extern "clearBackground"]
-opaque clearBackground : (c : Color) → IO Unit
+opaque clearBackground : (c : @& Color) → IO Unit
 
 @[extern "beginDrawing"]
 opaque beginDrawing : IO Unit
@@ -32,13 +32,13 @@ opaque beginDrawing : IO Unit
 opaque endDrawing : IO Unit
 
 @[extern "beginMode2D"]
-opaque beginMode2D : (camera : Camera2D) → IO Unit
+opaque beginMode2D : (camera : @& Camera2D) → IO Unit
 
 @[extern "endMode2D"]
 opaque endMode2D : IO Unit
 
 @[extern "beginMode3D"]
-opaque beginMode3D : (camera : Camera3D) → IO Unit
+opaque beginMode3D : (camera : @& Camera3D) → IO Unit
 
 @[extern "endMode3D"]
 opaque endMode3D : IO Unit
@@ -80,24 +80,24 @@ opaque updateCamera : (camera : Camera3D) → (mode : CameraMode) → IO Camera3
 /- Basic shapes drawing functions -/
 
 @[extern "drawCircleV"]
-opaque drawCircleV : (center : Vector2) → (radius : Float) → (color : Color) → IO Unit
+opaque drawCircleV : (center : @& Vector2) → (radius : Float) → (color : @& Color) → IO Unit
 
 @[extern "drawLineV"]
-opaque drawLineV : (startPos : Vector2) → (endPos : Vector2) → (color : Color) → IO Unit
+opaque drawLineV : (startPos : @& Vector2) → (endPos : @& Vector2) → (color : @& Color) → IO Unit
 
 @[extern "drawRectangleRec"]
-opaque drawRectangleRec : (rectangle : Rectangle) → (color : Color) → IO Unit
+opaque drawRectangleRec : (rectangle : @& Rectangle) → (color : @& Color) → IO Unit
 
 /- Basic shapes collision detection functions -/
 
 @[extern "checkCollisionPointRec"]
-opaque checkCollisionPointRec : (point : Vector2) → (rect : Rectangle) -> IO Bool
+opaque checkCollisionPointRec : (point : @& Vector2) → (rect : @& Rectangle) -> IO Bool
 
 /- Screen-space-related functions -/
 
 /-- Get the world space position for a 2d camera screen space position -/
 @[extern "getScreenToWorld2D"]
-opaque getScreenToWorld2D : (position : Vector2) → (camera : Camera2D) → Vector2
+opaque getScreenToWorld2D : (position : @& Vector2) → (camera : @& Camera2D) → Vector2
 
 /- Text drawing functions -/
 
@@ -105,15 +105,15 @@ opaque getScreenToWorld2D : (position : Vector2) → (camera : Camera2D) → Vec
 opaque drawFPS : (posX : Nat) → (posY : Nat) → IO Unit
 
 @[extern "drawText"]
-opaque drawText : (text : @& String) → (posX : Nat) → (posY : Nat) → (fontSize : Nat) → (color : Color) → IO Unit
+opaque drawText : (text : @& String) → (posX : Nat) → (posY : Nat) → (fontSize : Nat) → (color : @& Color) → IO Unit
 
 /- Basic geometric 3D shapes drawing functions -/
 
 @[extern "drawCube"]
-opaque drawCube : (position : Vector3) → (width : Float) → (height : Float) → (length : Float) → (color : Color) -> IO Unit
+opaque drawCube : (position : @& Vector3) → (width : Float) → (height : Float) → (length : Float) → (color : @& Color) -> IO Unit
 
 @[extern "drawCubeWires"]
-opaque drawCubeWires : (position : Vector3) → (width : Float) → (height : Float) → (length : Float) → (color : Color) -> IO Unit
+opaque drawCubeWires : (position : @& Vector3) → (width : Float) → (height : Float) → (length : Float) → (color : @& Color) -> IO Unit
 
 @[extern "drawGrid"]
 opaque drawGrid : (slices : Nat) → (spacing : Float) → IO Unit
@@ -125,7 +125,7 @@ opaque loadImage : (resourceName : @& String) -> IO Image
 opaque loadTextureFromImage : (image : @& Image) -> IO Texture2D
 
 @[extern "drawTexture"]
-opaque drawTexture : (texture : @& Texture2D) -> (posX : Nat) -> (posY : Nat) -> (color : Color) -> IO Unit
+opaque drawTexture : (texture : @& Texture2D) -> (posX : Nat) -> (posY : Nat) -> (color : @& Color) -> IO Unit
 
 /--
 Source rectangle (part of the texture to use for drawing)
@@ -135,4 +135,4 @@ origin defines the point of the texture used as reference for rotation and scali
 rotation defines the texture rotation (using origin as rotation point)
 -/
 @[extern "drawTexturePro"]
-opaque drawTexturePro : (texture : @& Texture2D) -> (source : Rectangle) -> (dest : Rectangle) -> (origin : Vector2) -> (rotation : Float) -> (tint : Color) -> IO Unit
+opaque drawTexturePro : (texture : @& Texture2D) -> (source : @& Rectangle) -> (dest : @& Rectangle) -> (origin : @& Vector2) -> (rotation : Float) -> (tint : @& Color) -> IO Unit
