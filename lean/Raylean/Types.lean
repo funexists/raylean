@@ -113,6 +113,7 @@ def right : Nat := 262
 def left : Nat := 263
 def down : Nat := 264
 def up : Nat := 265
+def r : Nat := 82
 
 end Key
 
