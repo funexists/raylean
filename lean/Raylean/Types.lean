@@ -32,6 +32,9 @@ structure Camera2D where
   /-- Camera zoom (scaling), should be 1.0f by default -/
   zoom : Float
 
+instance : Inhabited Camera2D where
+  default := ⟨⟨0,0⟩, ⟨0,0⟩, 0, 1⟩
+
 inductive CameraProjection where
   | perspective
   | orthographic
