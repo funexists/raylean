@@ -3,6 +3,7 @@ import «Raylean»
 namespace Window
 
 open Raylean.Types
+open Raylean.Graphics2D
 open Raylean
 
 def screenWidth : Nat := 800
@@ -24,9 +25,13 @@ def render : IO Unit := do
     }
   let origin : Vector2 := ⟨0, 0⟩
   let rotation : Float := 0
+  let rectangle := .rectangle 10 10 |> .color Color.red |> .scale ⟨20,20⟩
+  let circle := (.circle 100 |> .color Color.blue |> .scale ⟨0.5, 0.5⟩)
+  let p := rectangle ++ circle |> .translate ⟨250, -50⟩ |> .scale ⟨1, 2⟩
 
   while not (← windowShouldClose) do
     renderFrame do
+      renderPicture screenWidth.toFloat screenHeight.toFloat p
       clearBackground Color.Raylean.gold
       drawFPS 100 100
       let c := match (← IO.rand 0 6) with
