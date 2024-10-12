@@ -4,6 +4,7 @@ import Lens
 namespace Types
 
 open Raylean.Types
+open Lens
 
 structure Player where
   position : Vector2

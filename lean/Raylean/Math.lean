@@ -19,4 +19,6 @@ def sub (v1 : Vector2) (v2 : Vector2) : Vector2 :=
 def mul (v : Vector2) (s : Float) : Vector2 :=
   { x := s * v.x, y := s * v.y }
 
+def dot (v1 v2 : Vector2) : Vector2 := ⟨v1.x * v2.x, v1.y * v2.y⟩
+
 end Vector2
