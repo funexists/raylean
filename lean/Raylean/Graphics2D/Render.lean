@@ -51,10 +51,6 @@ partial def renderPicture' : (picture : Picture) → ReaderT RenderState IO Unit
   | .translate v p => renderPicture' p |>.local (over translate (·.add v))
   | .scale v p => renderPicture'  p |>.local (over scale (·.dot v))
   | .pictures ps => (fun _ => ()) <$> ps.mapM renderPicture'
-  | .rotate _ _ => return ()
-  | .text _ => return ()
-  | .image _ => return ()
-  | .imageSelection _ _ => return ()
 
 def renderPicture (width height : Float) (picture : Picture) : IO Unit :=
   let initState := {scale := ⟨1,1⟩, color := Color.transparent, translate := ⟨0,0⟩, center := ⟨width / 2, height / 2⟩}

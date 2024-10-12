@@ -9,13 +9,9 @@ inductive Picture : Type where
   | line (path : Array Vector2) : Picture
   | circle (radius : Float) : Picture
   | rectangle (width : Float) (height : Float)
-  | image : Image → Picture
-  | imageSelection (subsection : Rectangle) : Image → Picture
-  | text : String → Picture
   | color : Color → Picture → Picture
   | translate : Vector2 → Picture → Picture
   | scale : Vector2 → Picture → Picture
-  | rotate : Float → Picture → Picture
   | pictures : Array Picture → Picture
 
 instance : Inhabited Picture where
