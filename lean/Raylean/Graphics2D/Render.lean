@@ -10,39 +10,43 @@ open Lens
 
 namespace Raylean.Graphics2D
 
-structure RenderState where
+structure RenderContext where
   scale : Vector2
   color : Color
   translate : Vector2
   center : Vector2
 
-def RenderState.doTranslate (s : RenderState) (v : Vector2) : Vector2 :=
+/-- Translate a point in screen coordinates -/
+def RenderContext.screenTranslate (s : RenderContext) (v : Vector2) : Vector2 :=
   ⟨v.x + s.translate.x, v.y - s.translate.y⟩
 
-def RenderState.toScreen (s : RenderState) (v : Vector2) : Vector2 :=
-  s.doTranslate ⟨s.center.x + s.scale.x * v.x, s.center.y - s.scale.y * v.y⟩
+/-- Convert a point in Picture coordinates to a point in screen coordinates -/
+def RenderContext.toScreen (s : RenderContext) (v : Vector2) : Vector2 :=
+  s.screenTranslate ⟨s.center.x + s.scale.x * v.x, s.center.y - s.scale.y * v.y⟩
 
-makeLenses RenderState
+abbrev getContext : ReaderT RenderContext IO RenderContext := read
 
-open RenderState.Lens
+makeLenses RenderContext
 
-def renderLine (points : Array Vector2) : ReaderT RenderState IO Unit :=
-  for (startPoint, endPoint) in points.zip (points.extract 1 points.size) do
-    let s ← read
-    drawLineV (s.toScreen startPoint) (s.toScreen endPoint) s.color
+open RenderContext.Lens
 
-def renderCircle (radius : Float) : ReaderT RenderState IO Unit := do
-  let s ← read
-  drawCircleV (s.doTranslate s.center) (radius * (max 0 (max s.scale.x s.scale.y))) s.color
+def renderLine (points : Array Vector2) : ReaderT RenderContext IO Unit := do
+  let ctx ← getContext
+  drawLineStrip (points.map ctx.toScreen) ctx.color
 
-def renderRectangle (width height : Float) : ReaderT RenderState IO Unit := do
-  let s ← read
+def renderCircle (radius : Float) : ReaderT RenderContext IO Unit := do
+  let ctx ← getContext
+  drawCircleV (ctx.screenTranslate ctx.center) (radius * (max 0 (max ctx.scale.x ctx.scale.y))) ctx.color
+
+def renderRectangle (width height : Float) : ReaderT RenderContext IO Unit := do
+  let ctx ← getContext
   let topLeft : Vector2 := ⟨-width / 2, height / 2⟩
-  let p := s.toScreen topLeft
-  let r : Rectangle := {x := p.x, y := p.y, width := s.scale.x * width, height := s.scale.y * height}
-  drawRectangleRec r s.color
+  let p := ctx.toScreen topLeft
+  let r : Rectangle := {x := p.x, y := p.y, width := ctx.scale.x * width, height := ctx.scale.y * height}
+  drawRectangleRec r ctx.color
 
-partial def renderPicture' : (picture : Picture) → ReaderT RenderState IO Unit
+-- This function is partial because lean cannot prove termination
+partial def renderPicture' : (picture : Picture) → ReaderT RenderContext IO Unit
   | .blank => return ()
   | .line ps => renderLine ps
   | .circle radius => renderCircle radius
