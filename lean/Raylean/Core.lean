@@ -85,6 +85,9 @@ opaque drawCircleV : (center : @& Vector2) → (radius : Float) → (color : @& 
 @[extern "drawLineV"]
 opaque drawLineV : (startPos : @& Vector2) → (endPos : @& Vector2) → (color : @& Color) → IO Unit
 
+@[extern "drawLineStrip"]
+opaque drawLineStrip : (points : @& Array Vector2) → (color : @& Color) → IO Unit
+
 @[extern "drawRectangleRec"]
 opaque drawRectangleRec : (rectangle : @& Rectangle) → (color : @& Color) → IO Unit
 

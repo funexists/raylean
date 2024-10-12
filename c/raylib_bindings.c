@@ -505,3 +505,14 @@ lean_obj_res drawLineV(lean_obj_arg startPos_arg, lean_obj_arg endPos_arg, lean_
   DrawLineV(startPos, endPos, color);
   return IO_UNIT;
 }
+
+lean_obj_res drawLineStrip(b_lean_obj_arg points_arg, lean_obj_arg color_arg) {
+  size_t pointCount = lean_array_size(points_arg);
+  Vector2* points = malloc(pointCount * sizeof(Vector2));
+  for (size_t i = 0; i < pointCount; i++) {
+    points[i] = vector2_of_arg(lean_array_get_core(points_arg, i));
+  }
+  DrawLineStrip(points, pointCount, color_of_arg(color_arg));
+  free(points);
+  return IO_UNIT;
+}
