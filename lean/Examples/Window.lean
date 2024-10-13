@@ -26,9 +26,9 @@ def render : IO Unit := do
   let origin : Vector2 := ⟨0, 0⟩
   let rotation : Float := 0
   let rectangle := .rectangle 10 10 |> .color Color.red |> .scale ⟨20,20⟩
-  let circle := (.circle 100 |> .color Color.blue |> .scale ⟨0.5, 0.5⟩)
+  let circle := .circle 100 |> .color Color.blue |> .scale ⟨0.5, 0.5⟩
   let line :=  .line #[⟨100, 100⟩, ⟨200, 200⟩] |> .color Color.black
-  let p : Picture := line ++ (rectangle ++ circle |> .translate ⟨250, -50⟩ |> .scale ⟨1, 2⟩)
+  let p : Picture := line ++ (rectangle ++ circle |> .translate ⟨250, -40⟩ |> .scale ⟨1, 2⟩)
 
   while not (← windowShouldClose) do
     renderFrame do

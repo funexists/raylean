@@ -16,13 +16,11 @@ structure RenderContext where
   translate : Vector2
   center : Vector2
 
-/-- Translate a point in screen coordinates -/
-def RenderContext.screenTranslate (s : RenderContext) (v : Vector2) : Vector2 :=
-  ⟨v.x + s.translate.x, v.y - s.translate.y⟩
-
 /-- Convert a point in Picture coordinates to a point in screen coordinates -/
 def RenderContext.toScreen (s : RenderContext) (v : Vector2) : Vector2 :=
-  s.screenTranslate ⟨s.center.x + s.scale.x * v.x, s.center.y - s.scale.y * v.y⟩
+  let translateScreen := s.translate.dot ⟨1, -1⟩
+  let vScreen := v.dot ⟨1, -1⟩
+  vScreen |>.dot s.scale |>.add translateScreen |>.add s.center
 
 abbrev getContext : ReaderT RenderContext IO RenderContext := read
 
@@ -36,7 +34,7 @@ def renderLine (points : Array Vector2) : ReaderT RenderContext IO Unit := do
 
 def renderCircle (radius : Float) : ReaderT RenderContext IO Unit := do
   let ctx ← getContext
-  drawCircleV (ctx.screenTranslate ctx.center) (radius * (max 0 (max ctx.scale.x ctx.scale.y))) ctx.color
+  drawCircleV (ctx.toScreen ⟨0, 0⟩) (radius * (max 0 (max ctx.scale.x ctx.scale.y))) ctx.color
 
 def renderRectangle (width height : Float) : ReaderT RenderContext IO Unit := do
   let ctx ← getContext
@@ -52,7 +50,9 @@ partial def renderPicture' : (picture : Picture) → ReaderT RenderContext IO Un
   | .circle radius => renderCircle radius
   | .rectangle width height => renderRectangle width height
   | .color c p  => renderPicture' p |>.local (set color c)
-  | .translate v p => renderPicture' p |>.local (over translate (·.add v))
+  | .translate v p => renderPicture' p |>.local (fun s =>
+    over translate (·.add (v.dot s.scale)) s
+  )
   | .scale v p => renderPicture'  p |>.local (over scale (·.dot v))
   | .pictures ps => (fun _ => ()) <$> ps.mapM renderPicture'
 
