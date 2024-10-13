@@ -63,9 +63,6 @@ def hexEncodeByte (b : UInt8) : String :=
     let low := go <| b &&& 0xF
     s!"0x{hi}{low}"
 
-def List.splitAt (n : Nat) (ls : List α) : List α × List α :=
-  (ls.take n, ls.drop n)
-
 unsafe
 def List.repeatedly (f : List α → (β × List α)) (ls : List α) : List β :=
   match ls with
