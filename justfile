@@ -30,6 +30,11 @@ raylib_custom_cflags := raylib_config_flags + " " + raylib_os_custom_cflags
 # Raylib CC make paramter
 raylib_cc_parameter := if os() == "macos" { "/usr/bin/clang" } else { "gcc" }
 
+# Raylib extra Makefile variables
+#
+# e.g add "USE_WAYLAND_DISPLAY=TRUE" to build Raylib with Wayland support.
+raylib_extra_make_variables := ""
+
 static_lib_path := join(justfile_directory(), "lib")
 raylib_src_path := join(justfile_directory(), "raylib-5.0", "src")
 resource_dir := join(justfile_directory(), "resources")
@@ -71,6 +76,7 @@ build_raylib:
             PLATFORM=PLATFORM_DESKTOP \
             RAYLIB_LIBTYPE=STATIC \
             RAYLIB_RELEASE_PATH={{static_lib_path}} \
+            {{raylib_extra_make_variables}} \
             CUSTOM_CFLAGS="{{raylib_custom_cflags}}"
     fi
 
