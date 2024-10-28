@@ -49,11 +49,11 @@ partial def renderPicture' : (picture : Picture) → ReaderT RenderContext IO Un
   | .line ps => renderLine ps
   | .circle radius => renderCircle radius
   | .rectangle width height => renderRectangle width height
-  | .color c p  => renderPicture' p |>.local (set color c)
-  | .translate v p => renderPicture' p |>.local (fun s =>
+  | .color c p  => ReaderT.local (set color c) (renderPicture' p)
+  | .translate v p => ReaderT.local (fun s =>
     over translate (·.add (v.dot s.scale)) s
-  )
-  | .scale v p => renderPicture'  p |>.local (over scale (·.dot v))
+  ) (renderPicture' p)
+  | .scale v p => ReaderT.local (over scale (·.dot v)) (renderPicture' p)
   | .pictures ps => (fun _ => ()) <$> ps.mapM renderPicture'
 
 def renderPicture (width height : Float) (picture : Picture) : IO Unit :=
