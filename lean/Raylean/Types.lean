@@ -80,6 +80,9 @@ def black       := { r:=0, g:=0, b:=0, a:=255 : Color }
 def magenta     := { r := 255, g := 0, b := 255, a := 255 : Color  }
 def transparent := { r:=0, g:=0, b:=0, a:=0 : Color }
 
+instance : Inhabited Color where
+ default := transparent
+
 namespace Raylean
 
 def lightgray  := { r := 200, g := 200, b := 200, a := 255 : Color  }
