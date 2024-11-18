@@ -68,7 +68,7 @@ structure DemoRenderInfo where
 
 /-- Construct a DemoRenderInfo for each Demo --/
 def demoRenderInfos : Array DemoRenderInfo :=
-  let f {n : Nat} (idx : Fin n) (demo : Demo) :=
+  let f (idx : Nat) (demo : Demo) :=
     let demoInfo := mkDemoInfo demo
     let yOffset := idx * optionHeight
     let rect : Rectangle :=
@@ -76,12 +76,12 @@ def demoRenderInfos : Array DemoRenderInfo :=
       , y := yOffset.toFloat
       , width := screenWidth.toFloat
       , height := optionHeight.toFloat }
-    let color := if idx.val % 2 == 0 then lightSelectorColor else darkSelectorColor
+    let color := if idx % 2 == 0 then lightSelectorColor else darkSelectorColor
     let render := do
       drawRectangleRec rect color
       drawText demoInfo.title (Nat.div screenWidth 3) (yOffset + Nat.div optionHeight 2) textSize selectorTextColor
     let isClicked (pos : Vector2) := checkCollisionPointRec pos rect
-    {start := demoInfo.start, render, isClicked}
+    {start := demoInfo.start, render, isClicked : DemoRenderInfo}
   Demo.all.mapIdx f
 
 /-- Start the selector --/
