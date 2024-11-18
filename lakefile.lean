@@ -3,6 +3,8 @@ open System Lake DSL
 
 def optionUseBundle : Bool := get_config? bundle == some "on"
 
+require batteries from git "https://github.com/leanprover-community/batteries.git" @ "01f4969b6e861db6a99261ea5eadd5a9bb63011b" -- Lean v4.14.0-rc1
+
 package «raylean» where
   srcDir := "lean"
 
