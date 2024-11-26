@@ -3,6 +3,8 @@ open System Lake DSL
 
 def optionUseBundle : Bool := get_config? bundle == some "on"
 
+def optionDisableResvg : Bool := get_config? resvg == some "disable"
+
 require batteries from git "https://github.com/leanprover-community/batteries.git" @ "01f4969b6e861db6a99261ea5eadd5a9bb63011b" -- Lean v4.14.0-rc1
 
 package «raylean» where
@@ -22,7 +24,9 @@ lean_lib «Lens»
 lean_exe «raylean» where
   root := `Main
   moreLinkArgs := Id.run do
-    let mut args := #[ "lib/libraylib.a" , "lib/libresvg.a"]
+    let mut args := #[ "lib/libraylib.a"]
+    if not optionDisableResvg then
+      args := args ++ #["lib/libresvg.a"]
     if (← System.Platform.isOSX) then
       args := args ++
         #[ "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
@@ -53,6 +57,8 @@ target raylib_bindings.o pkg : FilePath := do
   let resvgInclude := pkg.dir / "resvg-0.43.0" / "crates" / "c-api"
   let weakArgs := #["-I", s!"{raylibInclude}", "-I", s!"{includes}", "-I", s!"{resvgInclude}"]
   let mut traceArgs := #["-fPIC"]
+  if optionDisableResvg then
+    traceArgs := traceArgs ++ #["-DRAYLEAN_NO_RESVG"]
   if not (optionUseBundle) then
     traceArgs := traceArgs ++ #["-DRAYLEAN_NO_BUNDLE"]
   buildLeanO oFile srcJob weakArgs traceArgs
