@@ -6,3 +6,4 @@ import «Examples».JessicaCantSwim
 import «Examples».BasicECS
 import «Examples».Orbital
 import «Examples».BouncingBall
+import «Examples».ImageDenotation

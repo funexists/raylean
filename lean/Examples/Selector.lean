@@ -18,6 +18,7 @@ inductive Demo where
   | basicECS
   | orbital
   | bouncingBall
+  | imageDenotation
 
 def Demo.all := allElements Demo
 
@@ -31,6 +32,7 @@ def stringToDemo (s : String) : Option Demo :=
   | "basicecs" => some .basicECS
   | "orbital" => some .orbital
   | "bouncingball" => some .bouncingBall
+  | "imagedenotation" => some .imageDenotation
   | _ => none
 
 def screenWidth : Nat := 800
@@ -57,6 +59,7 @@ def mkDemoInfo : Demo -> DemoInfo
    | .basicECS => {start := BasicECS.main, title := "Basic ECS"}
    | .orbital => {start := Orbital.main, title := "Orbital"}
    | .bouncingBall => {start := BouncingBall.main, title := "Bouncing Ball"}
+   | .imageDenotation => {start := ImageDenotation.main, title := "Image Denotation"}
 
 structure DemoRenderInfo where
   /-- The action that starts the demo --/
