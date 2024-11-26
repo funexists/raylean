@@ -139,3 +139,6 @@ rotation defines the texture rotation (using origin as rotation point)
 -/
 @[extern "drawTexturePro"]
 opaque drawTexturePro : (texture : @& Texture2D) -> (source : @& Rectangle) -> (dest : @& Rectangle) -> (origin : @& Vector2) -> (rotation : Float) -> (tint : @& Color) -> IO Unit
+
+@[extern "drawPixelV"]
+opaque drawPixelV : (position : @& Vector2) -> (color : @& Color) -> IO Unit

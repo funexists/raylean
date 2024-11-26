@@ -516,3 +516,10 @@ lean_obj_res drawLineStrip(b_lean_obj_arg points_arg, lean_obj_arg color_arg) {
   free(points);
   return IO_UNIT;
 }
+
+lean_obj_res drawPixelV(lean_obj_arg position_arg, lean_obj_arg color_arg) {
+  Vector2 position = vector2_of_arg(position_arg);
+  Color color = color_of_arg(color_arg);
+  DrawPixelV(position, color);
+  return IO_UNIT;
+}
