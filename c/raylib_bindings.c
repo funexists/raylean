@@ -146,6 +146,15 @@ lean_obj_res image_height(b_lean_obj_arg image) {
   return lean_uint32_to_nat(image_of_arg(image)->height);
 }
 
+
+#ifdef RAYLEAN_NO_RESVG
+
+Image loadImageFromData(const char *ext, const char *data, size_t size) {
+  return LoadImageFromMemory(ext, (unsigned char *)data, size);
+}
+
+#else
+
 Image loadImageFromData(const char *ext, const char *data, size_t size) {
   if (strcmp(".svg", ext) == 0 || strcmp(".SVG", ext) == 0) {
     Image image = {0};
@@ -186,6 +195,9 @@ Image loadImageFromData(const char *ext, const char *data, size_t size) {
     return LoadImageFromMemory(ext, (unsigned char *)data, size);
   }
 }
+
+
+#endif
 
 // Load an image from a resource
 // Resources are loaded from the resources/ directory in the project

@@ -1,11 +1,21 @@
+# set to non-empty string to disable use of resvg for SVG support.
+#
+# e.g:
+#   just disableResvg=yes build
+disableResvg := ''
+
 # set to non-empty string to disable use of the resource bundle.
 #
 # e.g:
 #   just disableBundle=yes build
 disableBundle := ''
 
+lake_bundle_config_opt := if disableBundle == "" { "-K bundle=on" } else { "" }
+
+lake_resvg_config_opt := if disableResvg == "" { "" } else { "-K resvg=disable" }
+
 # Flags used to configure the lake build
-lake_config_opts := if disableBundle == "" { "-K bundle=on" } else { "" }
+lake_config_opts := lake_bundle_config_opt + " " + lake_resvg_config_opt
 
 # Raylib CUSTOM_FLAGS tailed for the current os
 #
@@ -50,20 +60,24 @@ default:
 check_cargo:
     #!/usr/bin/env bash
     set -euo pipefail
-    if ! command -v cargo &> /dev/null
-    then
-        echo "cargo was not found. Please install rust: https://rustup.rs"
-        exit 1
+    if [ -z "{{disableResvg}}" ]; then
+        if ! command -v cargo &> /dev/null
+        then
+            echo "cargo was not found. Please install rust: https://rustup.rs"
+            exit 1
+        fi
     fi
 
 # build only the resvg static library
 build_resvg: check_cargo
     #!/usr/bin/env bash
-    set -euo pipefail
-    cd {{resvg_c_api_path}}
-    cargo build --release
-    mkdir -p {{static_lib_path}}
-    cp {{resvg_c_api_path}}/../../target/release/libresvg.a {{static_lib_path}}
+    if [ -z "{{disableResvg}}" ]; then
+        set -euo pipefail
+        cd {{resvg_c_api_path}}
+        cargo build --release
+        mkdir -p {{static_lib_path}}
+        cp {{resvg_c_api_path}}/../../target/release/libresvg.a {{static_lib_path}}
+    fi
 
 # build only the raylib static library
 build_raylib:
