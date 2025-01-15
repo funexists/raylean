@@ -10,29 +10,19 @@ open Raylean.Types
 
 /-- Demos supported in the selector --/
 inductive Demo where
-  | jessica
   | window
   | platformer2d
   | cube3d
   | inputKeys
-  | basicECS
-  | orbital
-  | bouncingBall
-  | imageDenotation
 
 def Demo.all := allElements Demo
 
 def stringToDemo (s : String) : Option Demo :=
   match s.trim.toLower with
-  | "jessica" => some .jessica
   | "window" => some .window
   | "platformer2d" => some .platformer2d
   | "cube3d" => some .cube3d
   | "inputkeys" => some .inputKeys
-  | "basicecs" => some .basicECS
-  | "orbital" => some .orbital
-  | "bouncingball" => some .bouncingBall
-  | "imagedenotation" => some .imageDenotation
   | _ => none
 
 def screenWidth : Nat := 800
@@ -55,11 +45,6 @@ def mkDemoInfo : Demo -> DemoInfo
    | .platformer2d => {start := Camera2DPlatformer.main, title := "2D Platformer"}
    | .cube3d => {start := Camera3D.camera3D, title := "3D Cube"}
    | .inputKeys => {start := InputKeys.inputKeys, title := "Input keys"}
-   | .jessica => {start := JessicaCantSwim.main, title := "Jessica can't swim"}
-   | .basicECS => {start := BasicECS.main, title := "Basic ECS"}
-   | .orbital => {start := Orbital.main, title := "Orbital"}
-   | .bouncingBall => {start := BouncingBall.main, title := "Bouncing Ball"}
-   | .imageDenotation => {start := ImageDenotation.main, title := "Image Denotation"}
 
 structure DemoRenderInfo where
   /-- The action that starts the demo --/
