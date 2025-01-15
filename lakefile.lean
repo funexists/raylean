@@ -6,7 +6,8 @@ def optionUseBundle : Bool := get_config? bundle == some "on"
 def optionDisableResvg : Bool := get_config? resvg == some "disable"
 
 require batteries from git "https://github.com/leanprover-community/batteries.git" @ "v4.14.0"
-require mathlib from git "https://github.com/leanprover-community/mathlib4.git" @ "v4.14.0"
+
+require «lens-demo» from git "https://github.com/funexists/lens-demo.git" @ "c0121c73d85ae3539add5b69b3345123ac4606e1"
 
 package «raylean» where
   srcDir := "lean"
@@ -16,10 +17,6 @@ lean_lib «Raylean» where
 
 lean_lib «Examples» where
   precompileModules := true
-
-lean_lib «ECS»
-
-lean_lib «Lens»
 
 @[default_target]
 lean_exe «raylean» where
