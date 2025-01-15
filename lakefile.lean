@@ -34,19 +34,6 @@ lean_exe «raylean» where
          ]
     args
 
-lean_exe «ecs-example» where
-  root := `Examples.ECS
-  moreLinkArgs := Id.run do
-    let mut args := #[ "lib/libraylib.a" , "lib/libresvg.a"]
-    if (← System.Platform.isOSX) then
-      args := args ++
-        #[ "-isysroot", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
-         , "-framework", "IOKit"
-         , "-framework", "Cocoa"
-         , "-framework", "OpenGL"
-         ]
-    args
-
 target raylib_bindings.o pkg : FilePath := do
   let oFile := pkg.buildDir / "c" / "raylib_bindings.o"
   let includes := pkg.dir / "c" / "include"
