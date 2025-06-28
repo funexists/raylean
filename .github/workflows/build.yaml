@@ -28,6 +28,11 @@ jobs:
       - name: query clang
         run: clang --version
 
+      - name: install libgmp, libuv
+        run: |
+          brew install gmp
+          brew install libuv
+
       - uses: actions/checkout@v4
 
       - name: build project
