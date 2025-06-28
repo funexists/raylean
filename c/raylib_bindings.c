@@ -2,22 +2,10 @@
 #include <raylib.h>
 #include <resvg.h>
 #include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
-
-// leanc doesn't provide stdlib.h
-void *memcpy(void *, const void *, size_t);
-void *malloc(size_t);
-void *calloc(size_t, size_t);
-
-// leanc doesn't provide string.h
-int strcmp(const char *s1, const char *s2) {
-  while (*s1 && (*s1 == *s2)) {
-    s1++;
-    s2++;
-  }
-  return *(const unsigned char *)s1 - *(const unsigned char *)s2;
-}
 
 #ifdef RAYLEAN_NO_BUNDLE
 
