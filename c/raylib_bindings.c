@@ -66,7 +66,7 @@ static lean_external_class *raylib_texture2d_class = NULL;
 // collected
 static void raylib_texture2d_finalizer(void *texture2d) {
   UnloadTexture(*(Texture2D *)texture2d);
-  lean_free_small(texture2d);
+  lean_free_small_object((lean_object*)texture2d);
 }
 
 static void raylib_texture2d_foreach(void *mod, b_lean_obj_arg fn) {}
@@ -110,7 +110,7 @@ static lean_external_class *raylib_image_class = NULL;
 // The finalizer is run by the lean runtime when an Image is garbage collected
 static void raylib_image_finalizer(void *image) {
   UnloadImage(*(Image *)image);
-  lean_free_small(image);
+  lean_free_small_object((lean_object*)image);
 }
 
 static void raylib_image_foreach(void *mod, b_lean_obj_arg fn) {}
