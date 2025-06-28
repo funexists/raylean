@@ -11,7 +11,7 @@ disableResvg := ''
 disableBundle := ''
 
 # set to the C compiler used to build native libraries (e.g raylib CC, and lake LEAN_CC)
-native_compiler := if os() == "macos" { "/usr/bin/clang" } else { "gcc" }
+native_compiler := if os() == "macos" { "/usr/bin/clang" } else { "clang" }
 
 lake_bundle_config_opt := if disableBundle == "" { "-K bundle=on" } else { "" }
 
