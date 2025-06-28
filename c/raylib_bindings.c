@@ -2,22 +2,10 @@
 #include <raylib.h>
 #include <resvg.h>
 #include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
-
-// leanc doesn't provide stdlib.h
-void *memcpy(void *, const void *, size_t);
-void *malloc(size_t);
-void *calloc(size_t, size_t);
-
-// leanc doesn't provide string.h
-int strcmp(const char *s1, const char *s2) {
-  while (*s1 && (*s1 == *s2)) {
-    s1++;
-    s2++;
-  }
-  return *(const unsigned char *)s1 - *(const unsigned char *)s2;
-}
 
 #ifdef RAYLEAN_NO_BUNDLE
 
@@ -66,7 +54,7 @@ static lean_external_class *raylib_texture2d_class = NULL;
 // collected
 static void raylib_texture2d_finalizer(void *texture2d) {
   UnloadTexture(*(Texture2D *)texture2d);
-  lean_free_small(texture2d);
+  lean_free_small_object((lean_object*)texture2d);
 }
 
 static void raylib_texture2d_foreach(void *mod, b_lean_obj_arg fn) {}
@@ -110,7 +98,7 @@ static lean_external_class *raylib_image_class = NULL;
 // The finalizer is run by the lean runtime when an Image is garbage collected
 static void raylib_image_finalizer(void *image) {
   UnloadImage(*(Image *)image);
-  lean_free_small(image);
+  lean_free_small_object((lean_object*)image);
 }
 
 static void raylib_image_foreach(void *mod, b_lean_obj_arg fn) {}

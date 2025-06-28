@@ -5,7 +5,7 @@ def optionUseBundle : Bool := get_config? bundle == some "on"
 
 def optionDisableResvg : Bool := get_config? resvg == some "disable"
 
-require batteries from git "https://github.com/leanprover-community/batteries.git" @ "v4.14.0"
+require batteries from git "https://github.com/leanprover-community/batteries.git" @ "v4.20.0"
 
 require «lens-demo» from git "https://github.com/funexists/lens-demo.git" @ "c0121c73d85ae3539add5b69b3345123ac4606e1"
 
@@ -51,4 +51,4 @@ target raylib_bindings.o pkg : FilePath := do
 extern_lib libleanffi pkg := do
   let ffiO ← raylib_bindings.o.fetch
   let name := nameToStaticLib "rayliblean"
-  buildStaticLib (pkg.nativeLibDir / name) #[ffiO]
+  buildStaticLib (pkg.staticLibDir / name) #[ffiO]

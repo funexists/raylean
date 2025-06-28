@@ -28,6 +28,11 @@ jobs:
       - name: query clang
         run: clang --version
 
+      - name: install libgmp, libuv
+        run: |
+          brew install gmp
+          brew install libuv
+
       - uses: actions/checkout@v4
 
       - name: build project
@@ -52,7 +57,7 @@ jobs:
         run: rustup toolchain install stable --profile minimal
 
       - name: Install raylib deps
-        run: sudo apt-get install -y --no-install-recommends libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libwayland-dev libxkbcommon-dev
+        run: sudo apt-get install -y --no-install-recommends libuv1-dev libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libwayland-dev libxkbcommon-dev
 
       - name: install elan
         run: |
