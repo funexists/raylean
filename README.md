@@ -21,7 +21,7 @@ Raylean has several dependencies:
 * XCode for macOS SDK frameworks like OpenGL.
 * [Rust](https://www.rust-lang.org/) for building resvg, which provides SVG support.
 * [libgmp](https://gmplib.org), required to link lean executables
-* [libuv](https://libuv.org), requried to link lean executables
+* [libuv](https://libuv.org), required to link lean executables
 
 You need to install all four to build Raylean. Below follows instructions for each.
 
@@ -58,7 +58,7 @@ Or use the [official documentation](https://www.rust-lang.org/tools/install) to 
 
 #### [libgmp](https://gmplib.org) and [libuv](https://libuv.org)
 
-These are requried to link lean executables.
+These are required to link lean executables.
 
 Install using [Homebrew](https://brew.sh) with:
 
