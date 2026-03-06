@@ -18,7 +18,7 @@ inductive Demo where
 def Demo.all := allElements Demo
 
 def stringToDemo (s : String) : Option Demo :=
-  match s.trim.toLower with
+  match s.trimAscii.toString.toLower with
   | "window" => some .window
   | "platformer2d" => some .platformer2d
   | "cube3d" => some .cube3d

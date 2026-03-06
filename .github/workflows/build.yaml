@@ -49,7 +49,7 @@ jobs:
           if-no-files-found: error
 
   build-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: extractions/setup-just@v2
 
@@ -57,7 +57,7 @@ jobs:
         run: rustup toolchain install stable --profile minimal
 
       - name: Install raylib deps
-        run: sudo apt-get install -y --no-install-recommends libuv1-dev libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libwayland-dev libxkbcommon-dev
+        run: sudo apt-get install -y --no-install-recommends libuv1-dev libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libwayland-dev libxkbcommon-dev libc++-dev libc++abi-dev
 
       - name: install elan
         run: |
