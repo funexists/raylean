@@ -9,17 +9,17 @@ require batteries from git "https://github.com/leanprover-community/batteries.gi
 
 require «lens-demo» from git "https://github.com/funexists/lens-demo.git" @ "v4.28.0"
 
-package «raylean» where
+package raylean where
   srcDir := "lean"
 
-lean_lib «Raylean» where
+lean_lib Raylean where
   precompileModules := true
 
-lean_lib «Examples» where
+lean_lib Examples where
   precompileModules := true
 
 @[default_target]
-lean_exe «raylean» where
+lean_exe raylean where
   root := `Main
   moreLinkArgs := Id.run do
     let mut args := #[ "lib/libraylib.a"]
