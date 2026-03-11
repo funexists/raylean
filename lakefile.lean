@@ -38,7 +38,7 @@ target raylib_bindings.o pkg : FilePath := do
   let oFile := pkg.buildDir / "c" / "raylib_bindings.o"
   let includes := pkg.dir / "c" / "include"
   let srcJob ← inputTextFile <| pkg.dir / "c" / "raylib_bindings.c"
-  let raylibInclude := pkg.dir / "raylib-5.0" / "src"
+  let raylibInclude := pkg.dir / "raylib-5.5" / "src"
   let resvgInclude := pkg.dir / "resvg-0.43.0" / "crates" / "c-api"
   let weakArgs := #["-I", s!"{raylibInclude}", "-I", s!"{includes}", "-I", s!"{resvgInclude}"]
   let mut traceArgs := #["-fPIC"]
