@@ -208,7 +208,7 @@ lean_obj_res loadImage(b_lean_obj_arg resource_name_arg) {
 
   bundle_free_resource((void*) data);
 
-  if (!IsImageReady(image)) {
+  if (!IsImageValid(image)) {
     return string_io_error("loadImage: LoadImageFromMemory failed");
   }
 

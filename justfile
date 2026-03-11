@@ -60,7 +60,7 @@ libuv_prefix := if os() == "macos" { shell("brew --prefix libuv") } else { "" }
 library_path := if gmp_prefix == "" { "" } else if libuv_prefix == "" { "" } else {gmp_prefix + "/lib:" + libuv_prefix + "/lib"}
 
 static_lib_path := join(justfile_directory(), "lib")
-raylib_src_path := join(justfile_directory(), "raylib-5.0", "src")
+raylib_src_path := join(justfile_directory(), "raylib-5.5", "src")
 resource_dir := join(justfile_directory(), "resources")
 bundle_h_path := join(justfile_directory(), "c", "include", "bundle.h")
 makebundle_src_path := join(justfile_directory(), "scripts", "makeBundle.lean")
