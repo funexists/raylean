@@ -1,4 +1,4 @@
-import «Raylean»
+import Raylean
 
 import Examples.Camera2DPlatformer.Types
 open Types
