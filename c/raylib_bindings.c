@@ -523,3 +523,13 @@ lean_obj_res drawPixelV(lean_obj_arg position_arg, lean_obj_arg color_arg) {
   DrawPixelV(position, color);
   return IO_UNIT;
 }
+
+lean_obj_res setConfigFlags(uint64_t flags) {
+  SetConfigFlags(flags);
+  return IO_UNIT;
+}
+
+lean_obj_res setWindowState(uint64_t flags) {
+  SetWindowState(flags);
+  return IO_UNIT;
+}

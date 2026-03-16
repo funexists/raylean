@@ -142,3 +142,15 @@ opaque drawTexturePro : (texture : @& Texture2D) -> (source : @& Rectangle) -> (
 
 @[extern "drawPixelV"]
 opaque drawPixelV : (position : @& Vector2) -> (color : @& Color) -> IO Unit
+
+@[extern "setConfigFlags"]
+opaque setConfigFlags : (flags : UInt64) -> IO Unit
+
+@[extern "setWindowState"]
+opaque setWindowState : (flags : UInt64) -> IO Unit
+
+namespace Flags
+
+def vsyncHint : UInt64 := 0x00000040
+
+end Flags
