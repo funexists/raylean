@@ -5,6 +5,15 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Lean 4.30.0+ runs `main` on a new thread but UI should run on the OS main
+// thread (and this is mandatory on macOS), so opt out before `main` runs.
+// https://github.com/leanprover/lean4/pull/12971
+__attribute__((constructor))
+static void raylean_force_main_thread(void) {
+  // set overwrite=0 so users may force the threaded behavior using the shell
+  setenv("LEAN_MAIN_USE_THREAD", "0", 0);
+}
+
 #define IO_UNIT (lean_io_result_mk_ok(lean_box(0)))
 
 #ifdef RAYLEAN_NO_BUNDLE
