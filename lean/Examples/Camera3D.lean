@@ -21,8 +21,8 @@ private def doRender : IO Unit := do
   }
   disableCursor
   while not (← windowShouldClose) do
-    camera <- updateCamera camera CameraMode.thridPerson
-    if (<- isKeyDown Key.space) then
+    camera ← updateCamera camera CameraMode.thirdPerson
+    if (← isKeyDown Key.space) then
       camera := { camera with target := cubePosition }
     renderFrame do
       clearBackground Color.white
