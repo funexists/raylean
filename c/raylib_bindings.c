@@ -314,12 +314,6 @@ static inline Camera2D camera2D_of_arg(lean_obj_arg camera) {
   return (Camera2D){offset, target, rotation, zoom};
 }
 
-lean_obj_res getRandomValue(uint32_t min, uint32_t max)
-    __attribute__((optnone)) {
-  // BUG: This always seems to return `min`
-  return lean_io_result_mk_ok(lean_box_uint32(GetRandomValue(min, max)));
-}
-
 lean_obj_res initWindow(lean_obj_arg width, lean_obj_arg height,
                         b_lean_obj_arg title) {
   InitWindow(lean_uint32_of_nat_mk(width), lean_uint32_of_nat_mk(height),
@@ -334,6 +328,23 @@ lean_obj_res windowShouldClose(void) {
 lean_obj_res closeWindow(void) {
   CloseWindow();
   return IO_UNIT;
+}
+
+lean_obj_res maximizeWindow(void) {
+  MaximizeWindow();
+  return IO_UNIT;
+}
+
+lean_obj_res getScreenWidth(void) {
+  return lean_io_result_mk_ok(lean_uint32_to_nat(GetScreenWidth()));
+}
+
+lean_obj_res getScreenHeight(void) {
+  return lean_io_result_mk_ok(lean_uint32_to_nat(GetScreenHeight()));
+}
+
+lean_obj_res getWindowScaleDPI(void) {
+  return lean_io_result_mk_ok(vector2_obj_mk(GetWindowScaleDPI()));
 }
 
 lean_obj_res beginDrawing(void) {
@@ -402,6 +413,17 @@ lean_obj_res beginMode3D(lean_obj_arg camera) {
   return IO_UNIT;
 }
 
+lean_obj_res getWorldToScreen (lean_obj_arg position, lean_obj_arg camera) {
+  return lean_io_result_mk_ok(vector2_obj_mk(GetWorldToScreen(vector3_of_arg(position),
+                                                              camera3D_of_arg(camera))));
+}
+
+lean_obj_res drawLine3D(lean_obj_arg startPos, lean_obj_arg endPos,
+                        lean_obj_arg color) {
+  DrawLine3D(vector3_of_arg(startPos), vector3_of_arg(endPos), color_of_arg(color));
+  return IO_UNIT;
+}
+
 lean_obj_res drawCube(lean_obj_arg position, double width, double height,
                       double length, lean_obj_arg color) {
   DrawCube(vector3_of_arg(position), width, height, length,
@@ -413,6 +435,14 @@ lean_obj_res drawCubeWires(lean_obj_arg position, double width, double height,
                            double length, lean_obj_arg color) {
   DrawCubeWires(vector3_of_arg(position), width, height, length,
                 color_of_arg(color));
+  return IO_UNIT;
+}
+
+lean_obj_res drawCylinderEx(lean_obj_arg startPos, lean_obj_arg endPos,
+                            double startRadius, double endRadius,
+                            lean_obj_arg sides, lean_obj_arg color) {
+  DrawCylinderEx(vector3_of_arg(startPos), vector3_of_arg(endPos), startRadius,
+                 endRadius, lean_uint32_of_nat_mk(sides), color_of_arg(color));
   return IO_UNIT;
 }
 

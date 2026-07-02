@@ -15,6 +15,18 @@ opaque closeWindow : IO Unit
 @[extern "windowShouldClose"]
 opaque windowShouldClose : IO Bool
 
+@[extern "maximizeWindow"]
+opaque maximizeWindow : IO Unit
+
+@[extern "getScreenWidth"]
+opaque getScreenWidth : IO Nat
+
+@[extern "getScreenHeight"]
+opaque getScreenHeight : IO Nat
+
+@[extern "getWindowScaleDPI"]
+opaque getWindowScaleDPI : IO Vector2
+
 /- Cursor-related functions -/
 
 @[extern "disableCursor"]
@@ -43,6 +55,9 @@ opaque beginMode3D : (camera : @& Camera3D) → IO Unit
 @[extern "endMode3D"]
 opaque endMode3D : IO Unit
 
+@[extern "getWorldToScreen"]
+opaque getWorldToScreen : (position : @& Vector3) → (camera : @& Camera3D) → IO Vector2
+
 /- Timing-related functions -/
 
 @[extern "setTargetFPS"]
@@ -50,11 +65,6 @@ opaque setTargetFPS : (fps : Nat) → IO Unit
 
 @[extern "getFrameTime"]
 opaque getFrameTime : IO Float
-
-/- Random values generation functions -/
-
-@[extern "getRandomValue"]
-opaque getRandomValue : UInt32 → UInt32 → IO UInt32
 
 /- Input-related functions: keyboard -/
 
@@ -112,11 +122,24 @@ opaque drawText : (text : @& String) → (posX : Nat) → (posY : Nat) → (font
 
 /- Basic geometric 3D shapes drawing functions -/
 
+@[extern "drawLine3D"]
+opaque drawLine3D : (startPos : @& Vector3) → (endPos : @& Vector3) → (color : @& Color) → IO Unit
+
 @[extern "drawCube"]
 opaque drawCube : (position : @& Vector3) → (width : Float) → (height : Float) → (length : Float) → (color : @& Color) -> IO Unit
 
+-- This is also in Raylib but it's easier to just reimplement it here
+def drawCubeV (position size : Vector3) (color : Color) :=
+  drawCube position size.x size.y size.z color
+
 @[extern "drawCubeWires"]
 opaque drawCubeWires : (position : @& Vector3) → (width : Float) → (height : Float) → (length : Float) → (color : @& Color) -> IO Unit
+
+def drawCubeWiresV (position size : Vector3) (color : Color) :=
+  drawCubeWires position size.x size.y size.z color
+
+@[extern "drawCylinderEx"]
+opaque drawCylinderEx : (startPos : @& Vector3) → (endPos : @& Vector3) → (startRadius : Float) → (endRadius : Float) → (sides : Nat) → (color : @& Color) -> IO Unit
 
 @[extern "drawGrid"]
 opaque drawGrid : (slices : Nat) → (spacing : Float) → IO Unit
@@ -151,6 +174,8 @@ opaque setWindowState : (flags : UInt64) -> IO Unit
 
 namespace Flags
 
+def windowResizable : UInt64 := 0x00000004
 def vsyncHint : UInt64 := 0x00000040
+def windowHighdpi : UInt64 := 0x00002000
 
 end Flags
