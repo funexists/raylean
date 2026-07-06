@@ -75,9 +75,10 @@ def white       := { r:=255, g:=255, b:=255, a:=255 : Color }
 def red         := { r:=255, g:=0, b:=0, a:=255 : Color }
 def green       := { r:=0, g:=255, b:=0, a:=255 : Color }
 def blue        := { r:=0, g:=0, b:=255, a:=255 : Color }
-def yellow      := { r:=0, g:=255, b:=255, a:=255 : Color }
+def yellow      := { r:=255, g:=255, b:=0, a:=255 : Color }
+def cyan        := { r:=0, g:=255, b:=255, a:=255 : Color }
+def magenta     := { r:=255, g:=0, b:=255, a:=255 : Color  }
 def black       := { r:=0, g:=0, b:=0, a:=255 : Color }
-def magenta     := { r := 255, g := 0, b := 255, a := 255 : Color  }
 def transparent := { r:=0, g:=0, b:=0, a:=0 : Color }
 
 instance : Inhabited Color where
